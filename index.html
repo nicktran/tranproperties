@@ -597,7 +597,7 @@
         </div>
         <div class="field-label" style="margin-bottom:10px;">Which unit? <span class="req">*</span></div>
         <div class="prop-picker" style="grid-template-columns:1fr;">
-          <div class="prop-card on" id="pc-parker" onclick="pickProp('parker')">
+          <div class="prop-card on" id="pc-parker" onclick="selectUnit('parker')">
             <div class="prop-check">✓</div>
             <div class="prop-hood">Downtown Berkeley</div>
             <div class="prop-addr">2032 Parker St, Unit A, Berkeley</div>
@@ -993,6 +993,11 @@
     document.querySelectorAll('.prop-card').forEach(c => c.classList.remove('on'));
     document.getElementById('pc-' + id).classList.add('on');
     document.getElementById('prop-err').style.display = 'none';
+  }
+
+  function selectUnit(id) {
+    pickProp(id);
+    next(1);
   }
 
   function setStep(n) {
