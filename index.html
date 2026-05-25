@@ -572,7 +572,7 @@
     <h2 class="section-title" style="margin-bottom:6px;">Rental application</h2>
     <p class="section-sub" style="margin-bottom:28px;">Fields marked <span style="color:var(--accent)">*</span> are required. We respond within 1–2 business days.</p>
 
-    <div style="background:var(--accent-tint);border:1px solid var(--accent-mid);border-radius:10px;padding:20px 24px;margin-bottom:36px;font-size:14px;line-height:1.7;color:var(--text);">
+    <div id="before-you-begin" style="background:var(--accent-tint);border:1px solid var(--accent-mid);border-radius:10px;padding:20px 24px;margin-bottom:36px;font-size:14px;line-height:1.7;color:var(--text);">
       <p style="font-weight:600;margin:0 0 10px;">Before you begin</p>
       <ul style="margin:0 0 14px;padding-left:18px;">
         <li>Each adult age 18 or older must complete a <strong>separate application</strong>.</li>
@@ -1366,6 +1366,7 @@
     fetch('/', { method: 'POST', body: fd })
     .then(() => {
       document.getElementById('form-body').style.display = 'none';
+      document.getElementById('before-you-begin').style.display = 'none';
       document.querySelectorAll('.steps').forEach(s => s.style.display = 'none');
       const sc = document.getElementById('success-screen');
       sc.classList.add('on');
