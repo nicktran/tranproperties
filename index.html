@@ -1189,14 +1189,17 @@
     document.getElementById('passport-field').style.display = type === 'Passport' ? '' : 'none';
   }
 
+  const ssnTimers = {};
   function formatSSN(e) {
     const el = e.target;
-    // Strip everything except digits, cap at 9
     let digits = el.value.replace(/\D/g, '').slice(0, 9);
-    // Insert dashes: XXX-XX-XXXX
     if (digits.length > 5) digits = digits.slice(0,3) + '-' + digits.slice(3,5) + '-' + digits.slice(5);
     else if (digits.length > 3) digits = digits.slice(0,3) + '-' + digits.slice(3);
     el.value = digits;
+    // Briefly reveal then re-mask
+    el.type = 'text';
+    clearTimeout(ssnTimers[el.id]);
+    ssnTimers[el.id] = setTimeout(() => { el.type = 'password'; }, 800);
   }
   document.getElementById('f-ssn').addEventListener('input', formatSSN);
   document.getElementById('f-ssn2').addEventListener('input', formatSSN);
