@@ -122,8 +122,8 @@
     .listing-card-bottom { display: flex; flex-direction: row; flex: 1; }
 
     .listing-gallery { width: 100%; background: #1a1a1a; overflow: hidden; display: flex; flex-direction: column; border-bottom: 1px solid var(--border); }
-    .gallery-main { position: relative; width: 100%; aspect-ratio: 16 / 7; overflow: hidden; cursor: pointer; }
-    .gallery-main img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.35s ease; pointer-events: none; }
+    .gallery-main { position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; cursor: pointer; }
+    .gallery-main img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #111; opacity: 0; transition: opacity 0.35s ease; pointer-events: none; }
     .gallery-main img.active { opacity: 1; }
     .gallery-tag { position: absolute; top: 16px; left: 16px; background: var(--white); color: var(--text); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; letter-spacing: 0.04em; z-index: 2; }
     .gallery-avail { position: absolute; top: 16px; right: 16px; background: var(--success); color: #fff; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; z-index: 2; }
