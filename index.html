@@ -681,7 +681,7 @@
 
         <hr class="rule" />
         <div class="field" style="margin-bottom:4px;">
-          <label class="field-label">Total occupants (including yourself) <span class="req">*</span></label>
+          <label class="field-label" id="occ-label">Total occupants (including yourself) <span class="req">*</span></label>
           <div class="radio-group" id="rg-occ">
             <label class="rc-label" onclick="updateRoommates(1)"><input type="radio" name="occ" value="1" /><span class="rc-dot"></span>1</label>
             <label class="rc-label" onclick="updateRoommates(2)"><input type="radio" name="occ" value="2" /><span class="rc-dot"></span>2</label>
@@ -1121,7 +1121,9 @@
       if (!occ) { document.getElementById('occ-err').style.display = 'block'; ok = false; }
       else {
         document.getElementById('occ-err').style.display = 'none';
-        for (let i = 1; i < parseInt(occ.value); i++) {
+        const isCosignerVal = appType === 'cosigner';
+        const rmStart = isCosignerVal ? 1 : 2;
+        for (let i = rmStart; i <= parseInt(occ.value); i++) {
           const rm = document.getElementById(`f-roommate-${i}`);
           if (rm) {
             const grp = rm.closest('.field');
@@ -1228,22 +1230,34 @@
     if (type === 'cosigner') {
       si4.style.opacity = '0.3';
       si4.title = 'Not required for co-signers';
+      document.getElementById('occ-label').innerHTML = 'Total tenants <span class="req">*</span>';
     } else {
       si4.style.opacity = '';
       si4.title = '';
+      document.getElementById('occ-label').innerHTML = 'Total occupants (including yourself) <span class="req">*</span>';
     }
     const btn = document.getElementById('step3-next-btn');
     if (btn) btn.textContent = type === 'cosigner' ? 'Review →' : 'Continue →';
+    // Re-render roommate fields if a count is already selected
+    const occ = document.querySelector('input[name="occ"]:checked');
+    if (occ) updateRoommates(parseInt(occ.value));
   }
 
   function updateRoommates(count) {
     const container = document.getElementById('roommate-fields');
-    const needed = count - 1;
-    if (needed <= 0) { container.innerHTML = ''; return; }
+    const isCosigner = appType === 'cosigner';
+    // Tenants: show fields for occupants 2..N (they are occupant 1)
+    // Co-signers: show fields for all N tenants (they are not an occupant)
+    const start = isCosigner ? 1 : 2;
+    const total = count;
+    if (start > total) { container.innerHTML = ''; return; }
     let html = '<div style="margin-top:14px;">';
-    for (let i = 1; i <= needed; i++) {
+    for (let i = start; i <= total; i++) {
+      const label = isCosigner
+        ? (count === 1 ? 'Tenant applicant — full name' : `Tenant ${i} — full name`)
+        : `Roommate ${i - 1} — full name`;
       html += `<div class="field" style="margin-bottom:10px;">
-        <label class="field-label">Roommate ${i} — full name <span class="req">*</span></label>
+        <label class="field-label">${label} <span class="req">*</span></label>
         <input type="text" id="f-roommate-${i}" placeholder="Full name" />
         <span class="field-err-msg">Required</span>
       </div>`;
