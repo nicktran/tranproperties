@@ -1036,7 +1036,7 @@
     parker:   { address: '2032 Parker St, Unit A, Berkeley, CA 94704', hood: 'Downtown Berkeley', price: '$3,395/mo', meta: '2 bed · 1 bath · 1,295 sq ft', avail: 'June 1, 2026' }
   };
 
-  let selProp = 'parker', consent = false, curStep = 1;
+  let selProp = 'parker', consent = false, curStep = 1, appType = null;
 
   function goApply(id) { pickProp(id); document.getElementById('apply').scrollIntoView({ behavior: 'smooth' }); }
 
@@ -1178,7 +1178,10 @@
     return valid;
   }
 
-  let appType = null;
+  if (new URLSearchParams(window.location.search).has('skip')) {
+    appType = 'tenant';
+    window.addEventListener('load', () => { document.getElementById('apply').scrollIntoView(); setStep(5); buildSummary(); });
+  }
 
   function pickAppType(type) {
     appType = type;
