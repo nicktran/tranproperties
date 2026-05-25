@@ -581,6 +581,10 @@
       <div class="step" id="si-5"><div class="step-dot" id="sd-5">5</div><div class="step-label">Review</div></div>
     </div>
 
+    <div id="prop-banner" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:24px;font-size:13px;color:var(--text-light);">
+      Applying for: <strong id="prop-banner-text" style="color:var(--text);"></strong>
+    </div>
+
     <div id="form-body">
 
       <!-- STEP 1 -->
@@ -635,9 +639,15 @@
           </div>
           <div class="field" id="ssn-field" style="display:none;margin-bottom:12px;">
             <label class="field-label">Social Security Number <span class="req">*</span></label>
-            <input type="password" id="f-ssn" placeholder="XXX-XX-XXXX" autocomplete="off" />
-            <span class="field-hint">Transmitted securely over HTTPS. Used for credit/background check only.</span>
+            <input type="password" id="f-ssn" placeholder="123-45-6789" autocomplete="off" />
+            <span class="field-hint">Enter <strong>with dashes</strong> (e.g. 123-45-6789). Transmitted securely over HTTPS. Used for credit/background check only.</span>
             <span class="field-err-msg">Required</span>
+          </div>
+          <div class="field" id="ssn2-field" style="display:none;margin-bottom:12px;">
+            <label class="field-label">Confirm Social Security Number <span class="req">*</span></label>
+            <input type="password" id="f-ssn2" placeholder="123-45-6789" autocomplete="off" />
+            <span class="field-hint">Re-enter your SSN <strong>with dashes</strong> to confirm.</span>
+            <span class="field-err-msg" id="ssn2-err-msg">Required</span>
           </div>
           <div class="field" id="passport-field" style="display:none;margin-bottom:12px;">
             <label class="field-label">Passport number <span class="req">*</span></label>
@@ -1010,6 +1020,13 @@
       else if (i === n) ind.classList.add('active');
     }
     curStep = n;
+    const banner = document.getElementById('prop-banner');
+    if (n > 1 && selProp) {
+      document.getElementById('prop-banner-text').textContent = PROPS[selProp].address;
+      banner.style.display = '';
+    } else {
+      banner.style.display = 'none';
+    }
     document.getElementById('form-body').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -1057,8 +1074,24 @@
       if (!idType) { document.getElementById('idtype-err').style.display = 'block'; ok = false; }
       else {
         document.getElementById('idtype-err').style.display = 'none';
-        if (idType.value === 'SSN') ok = req('f-ssn') & ok;
-        else ok = req('f-passport') & ok;
+        if (idType.value === 'SSN') {
+          ok = req('f-ssn') & ok;
+          const ssn1 = document.getElementById('f-ssn');
+          const ssn2 = document.getElementById('f-ssn2');
+          const ssn2grp = ssn2.closest('.field');
+          const errMsg = document.getElementById('ssn2-err-msg');
+          if (!ssn2.value.trim()) {
+            ssn2.classList.add('err'); ssn2grp && ssn2grp.classList.add('has-err');
+            errMsg.textContent = 'Required';
+            ok = false;
+          } else if (ssn1.value !== ssn2.value) {
+            ssn2.classList.add('err'); ssn2grp && ssn2grp.classList.add('has-err');
+            errMsg.textContent = 'SSNs do not match';
+            ok = false;
+          } else {
+            ssn2.classList.remove('err'); ssn2grp && ssn2grp.classList.remove('has-err');
+          }
+        } else ok = req('f-passport') & ok;
       }
       // Photo ID
       const photoEl = document.getElementById('f-photoid');
@@ -1137,6 +1170,7 @@
 
   function toggleIdFields(type) {
     document.getElementById('ssn-field').style.display      = type === 'SSN'      ? '' : 'none';
+    document.getElementById('ssn2-field').style.display     = type === 'SSN'      ? '' : 'none';
     document.getElementById('passport-field').style.display = type === 'Passport' ? '' : 'none';
   }
 
