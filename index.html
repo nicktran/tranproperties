@@ -383,6 +383,11 @@
       .section-title { font-size: 1.4rem; }
     }
   </style>
+  <script src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_MAPS_API_KEY&libraries=places&callback=initAddressAutocomplete" async defer></script>
+  <style>
+    /* Keep Google autocomplete dropdown above form elements */
+    .pac-container { z-index: 9999; }
+  </style>
 </head>
 <body>
 
@@ -1250,6 +1255,22 @@
     document.getElementById('ssn-field').style.display      = type === 'SSN'      ? '' : 'none';
     document.getElementById('ssn2-field').style.display     = type === 'SSN'      ? '' : 'none';
     document.getElementById('passport-field').style.display = type === 'Passport' ? '' : 'none';
+  }
+
+  function initAddressAutocomplete() {
+    const input = document.getElementById('f-prevaddr');
+    if (!input || !window.google) return;
+    const ac = new google.maps.places.Autocomplete(input, {
+      types: ['address'],
+      componentRestrictions: { country: 'us' }
+    });
+    ac.addListener('place_changed', () => {
+      const place = ac.getPlace();
+      if (place.formatted_address) input.value = place.formatted_address;
+      // Clear validation error if present
+      input.classList.remove('err');
+      input.closest('.field') && input.closest('.field').classList.remove('has-err');
+    });
   }
 
   const ssnTimers = {};
