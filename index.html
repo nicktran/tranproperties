@@ -1090,7 +1090,8 @@
     } else {
       banner.style.display = 'none';
     }
-    document.getElementById('form-body').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('before-you-begin').style.display = n === 1 ? '' : 'none';
+    document.getElementById('apply').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function next(from) {
