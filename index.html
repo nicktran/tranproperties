@@ -568,9 +568,11 @@
 <!-- APPLICATION -->
 <div id="apply" class="apply-wrap">
   <div class="apply-inner">
+    <div id="apply-header">
     <div class="eyebrow">Ready to apply?</div>
     <h2 class="section-title" style="margin-bottom:6px;">Rental application</h2>
     <p class="section-sub" style="margin-bottom:28px;">Fields marked <span style="color:var(--accent)">*</span> are required. We respond within 1–2 business days.</p>
+    </div>
 
     <div id="before-you-begin" style="background:var(--accent-tint);border:1px solid var(--accent-mid);border-radius:10px;padding:20px 24px;margin-bottom:36px;font-size:14px;line-height:1.7;color:var(--text);">
       <p style="font-weight:600;margin:0 0 10px;">Before you begin</p>
@@ -858,7 +860,10 @@
           <li>Last two bank statements</li>
         </ul>
       </div>
-      <a href="#listings" class="btn btn-ghost" style="margin-top:24px;">← Back to listings</a>
+      <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-accent" onclick="restartApplication()">Start another application</button>
+        <a href="#listings" class="btn btn-ghost">← Back to listings</a>
+      </div>
     </div>
 
   </div>
@@ -1230,6 +1235,32 @@
     }
   });
 
+  function restartApplication() {
+    // Reset form fields
+    document.querySelectorAll('#form-body input, #form-body select, #form-body textarea').forEach(el => {
+      if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+      else el.value = '';
+    });
+    document.querySelectorAll('.rc-label').forEach(l => l.classList.remove('on'));
+    document.getElementById('roommate-fields').innerHTML = '';
+    document.getElementById('ssn-field').style.display = 'none';
+    document.getElementById('ssn2-field').style.display = 'none';
+    document.getElementById('passport-field').style.display = 'none';
+    selProp = 'parker'; appType = null; consent = false;
+    document.querySelectorAll('.prop-card').forEach(c => c.classList.remove('on'));
+    document.getElementById('pc-parker').classList.add('on');
+    // Restore hidden elements
+    document.getElementById('apply-header').style.display = '';
+    document.getElementById('before-you-begin').style.display = '';
+    document.getElementById('form-body').style.display = '';
+    document.getElementById('prop-banner').style.display = 'none';
+    document.querySelectorAll('.steps').forEach(s => s.style.display = '');
+    // Hide success screen
+    document.getElementById('success-screen').classList.remove('on');
+    setStep(1);
+    document.getElementById('apply').scrollIntoView({ behavior: 'smooth' });
+  }
+
   function toggleConsent() {
     consent = !consent;
     document.getElementById('consent-box').classList.toggle('on', consent);
@@ -1367,6 +1398,7 @@
     .then(() => {
       document.getElementById('form-body').style.display = 'none';
       document.getElementById('before-you-begin').style.display = 'none';
+      document.getElementById('apply-header').style.display = 'none';
       document.querySelectorAll('.steps').forEach(s => s.style.display = 'none');
       const sc = document.getElementById('success-screen');
       sc.classList.add('on');
