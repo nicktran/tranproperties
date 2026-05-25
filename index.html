@@ -1178,9 +1178,27 @@
     return valid;
   }
 
-  if (new URLSearchParams(window.location.search).has('skip')) {
+  const _params = new URLSearchParams(window.location.search);
+  if (_params.has('skip')) {
     appType = 'tenant';
     window.addEventListener('load', () => { document.getElementById('apply').scrollIntoView(); setStep(5); buildSummary(); });
+  }
+  if (_params.has('success')) {
+    appType = 'tenant';
+    window.addEventListener('load', () => {
+      const p = PROPS[selProp];
+      document.getElementById('form-body').style.display = 'none';
+      document.getElementById('before-you-begin').style.display = 'none';
+      document.getElementById('apply-header').style.display = 'none';
+      document.querySelectorAll('.steps').forEach(s => s.style.display = 'none');
+      const sc = document.getElementById('success-screen');
+      sc.classList.add('on');
+      document.getElementById('s-prop').textContent = p.address;
+      document.getElementById('s-email').textContent = 'applicant@email.com';
+      const d = new Date(); d.setDate(d.getDate() + 2);
+      document.getElementById('s-date').textContent = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+      document.getElementById('apply').scrollIntoView();
+    });
   }
 
   function pickAppType(type) {
