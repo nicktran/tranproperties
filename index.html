@@ -642,7 +642,6 @@
           <div class="field"><label class="field-label">Phone <span class="req">*</span></label><input type="tel" id="f-phone" placeholder="(510) 555-0100" /><span class="field-err-msg">Required</span></div>
           <div class="field"><label class="field-label">Date of birth <span class="req">*</span></label><input type="date" id="f-dob" /><span class="field-err-msg">Required</span></div>
           <div class="field"><label class="field-label">Desired move-in <span class="req">*</span></label><input type="date" id="f-movein" min="2026-06-01" value="2026-06-01" /><span class="field-err-msg">Required</span></div>
-          <div class="field col-2"><label class="field-label">Current address <span class="req">*</span></label><input type="text" id="f-curaddr" placeholder="123 Main St, Oakland, CA 94601" /><span class="field-err-msg">Required</span></div>
         </div>
 
         <div style="margin-bottom:16px;">
@@ -1097,7 +1096,7 @@
     if (step === 2) {
       ok = req('f-first') & ok; ok = req('f-last') & ok;
       ok = email('f-email') & ok; ok = req('f-phone') & ok;
-      ok = req('f-dob') & ok; ok = req('f-movein') & ok; ok = req('f-curaddr') & ok;
+      ok = req('f-dob') & ok; ok = req('f-movein') & ok;
       const occ = document.querySelector('input[name="occ"]:checked');
       if (!occ) { document.getElementById('occ-err').style.display = 'block'; ok = false; }
       else {
@@ -1349,7 +1348,6 @@
         <div class="summary-row"><span class="summary-key">Name</span><span class="summary-val">${v('f-first')} ${v('f-last')}</span></div>
         <div class="summary-row"><span class="summary-key">Email</span><span class="summary-val">${v('f-email')}</span></div>
         <div class="summary-row"><span class="summary-key">Phone</span><span class="summary-val">${v('f-phone')}</span></div>
-        <div class="summary-row"><span class="summary-key">Current address</span><span class="summary-val">${v('f-curaddr')}</span></div>
         <div class="summary-row"><span class="summary-key">Occupants</span><span class="summary-val">${occ ? occ.value : '—'}</span></div>
         ${roommateRows.join('')}
         ${idType ? `<div class="summary-row"><span class="summary-key">ID type</span><span class="summary-val">${idType.value === 'SSN' ? 'US Resident (SSN provided)' : 'International (Passport provided)'}</span></div>` : ''}
