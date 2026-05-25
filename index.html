@@ -843,35 +843,56 @@
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
       <h2>Application submitted</h2>
-      <p>We've received your application and will be in touch within 1–2 business days.</p>
-      <div class="success-detail">
-        <div class="success-row">📍 <span id="s-prop"></span></div>
-        <div class="success-row">📧 Confirmation sent to <span id="s-email"></span></div>
-        <div class="success-row">📅 Expect a reply by <span id="s-date"></span></div>
+      <p style="margin-bottom:6px;">Your application is under review.</p>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:4px;"><strong id="s-prop" style="color:var(--text);"></strong></p>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:28px;">Reply by <span id="s-date"></span> · <span id="s-email"></span></p>
+
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;text-align:left;overflow:hidden;max-width:520px;margin:0 auto;">
+
+        <!-- Card header -->
+        <div style="background:var(--accent-tint);border-bottom:1px solid var(--accent-mid);padding:14px 24px;">
+          <p style="margin:0;font-size:13px;font-weight:600;color:var(--accent);">Action required — complete both steps below</p>
+        </div>
+
+        <!-- Step 1 -->
+        <div style="padding:24px 24px 20px;">
+          <div style="display:flex;align-items:flex-start;gap:14px;">
+            <div style="background:var(--accent);color:#fff;border-radius:50%;width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">1</div>
+            <div style="flex:1;">
+              <p style="margin:0 0 10px;font-size:15px;font-weight:700;color:var(--text);">Pay the $30 application fee</p>
+              <p style="margin:0 0 2px;font-size:14px;color:var(--text);">PayPal · Venmo · Zelle → <strong>510-508-8114</strong></p>
+              <p style="margin:0 0 16px;font-size:13px;color:var(--text-2);">Processing begins once payment is received.</p>
+              <div style="background:var(--page);border:1px solid var(--border);border-radius:8px;padding:12px 16px;">
+                <table style="width:100%;border-collapse:collapse;font-size:13px;color:var(--text);">
+                  <tr><td style="padding:3px 0;color:var(--text-2);">Credit report</td><td style="text-align:right;white-space:nowrap;color:var(--text-2);">$16.95</td></tr>
+                  <tr><td style="padding:3px 0;color:var(--text-2);">Background screening, reference checks &amp; admin</td><td style="text-align:right;white-space:nowrap;color:var(--text-2);">$13.05</td></tr>
+                  <tr style="border-top:1px solid var(--border);"><td style="padding:6px 0 0;font-weight:600;">Total per applicant</td><td style="text-align:right;padding:6px 0 0;font-weight:600;white-space:nowrap;">$30.00</td></tr>
+                </table>
+                <p style="margin:8px 0 0;font-size:11px;color:var(--text-2);">Used only for costs permitted by California law.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr style="border:none;border-top:1px solid var(--border);margin:0;" />
+
+        <!-- Step 2 -->
+        <div style="padding:20px 24px 24px;">
+          <div style="display:flex;align-items:flex-start;gap:14px;">
+            <div style="background:var(--accent);color:#fff;border-radius:50%;width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">2</div>
+            <div style="flex:1;">
+              <p style="margin:0 0 10px;font-size:15px;font-weight:700;color:var(--text);">Email your supporting documents</p>
+              <p style="margin:0 0 10px;font-size:14px;color:var(--text);">Send to <a href="mailto:nicktran@nicktran.com" style="color:var(--accent);text-decoration:none;font-weight:600;">nicktran@nicktran.com</a></p>
+              <ul style="margin:0;padding-left:18px;font-size:14px;color:var(--text);line-height:1.7;">
+                <li>Proof of income (pay stub, 1099, profit &amp; loss statement, scholarship letter, offer letter, grant letter, etc.)</li>
+                <li>Last two bank statements</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div style="background:var(--accent-tint);border:1px solid var(--accent-mid);border-radius:10px;padding:20px 24px;margin-top:28px;font-size:14px;line-height:1.7;color:var(--text);text-align:left;">
-        <p style="font-weight:600;margin:0 0 12px;">Next steps</p>
 
-        <p style="font-weight:600;margin:0 0 2px;">1. Pay the application fee</p>
-        <p style="margin:0 0 2px;">$30.00 per applicant</p>
-        <p style="margin:0 0 2px;">PayPal · Venmo · Zelle → <strong>510-508-8114</strong></p>
-        <p style="margin:0 0 14px;">Processing begins once the fee is received.</p>
-
-        <p style="font-weight:600;margin:0 0 2px;">2. Email supporting documents to <a href="mailto:nicktran@nicktran.com" style="color:var(--accent);text-decoration:none;font-weight:600;">nicktran@nicktran.com</a></p>
-        <ul style="margin:0 0 16px;padding-left:18px;">
-          <li>Proof of income (pay stub, 1099, profit &amp; loss statement, scholarship letter, offer letter, grant letter, etc.)</li>
-          <li>Last two bank statements</li>
-        </ul>
-
-        <hr style="border:none;border-top:1px solid var(--accent-mid);margin:0 0 12px;" />
-        <p style="font-weight:600;margin:0 0 8px;">Application fee itemization</p>
-        <table style="width:100%;border-collapse:collapse;font-size:13px;color:var(--text);">
-          <tr><td style="padding:2px 0;">Credit report</td><td style="text-align:right;padding:2px 0;white-space:nowrap;">$16.95</td></tr>
-          <tr><td style="padding:2px 0;">Background screening, reference checks &amp; administrative processing</td><td style="text-align:right;padding:2px 0;white-space:nowrap;">$13.05</td></tr>
-          <tr style="border-top:1px solid var(--border);font-weight:600;"><td style="padding:6px 0 2px;">Total</td><td style="text-align:right;padding:6px 0 2px;white-space:nowrap;">$30.00</td></tr>
-        </table>
-        <p style="margin:10px 0 0;font-size:12px;color:var(--text);">The application screening fee is used only for costs permitted by California law.</p>
-      </div>
       <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
         <button class="btn btn-accent" onclick="restartApplication()">Start another application</button>
         <a href="#listings" class="btn btn-ghost">← Back to listings</a>
