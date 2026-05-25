@@ -4,3 +4,6 @@ Thumbs.db
 
 # Local Netlify folder
 .netlify
+
+# Claude Code local settings
+.claude/settings.local.json
