@@ -655,13 +655,13 @@
           <div class="field" id="ssn-field" style="display:none;margin-bottom:12px;">
             <label class="field-label">Social Security Number <span class="req">*</span></label>
             <input type="password" id="f-ssn" placeholder="123-45-6789" autocomplete="off" />
-            <span class="field-hint">Enter <strong>with dashes</strong> (e.g. 123-45-6789). Transmitted securely over HTTPS. Used for credit/background check only.</span>
+            <span class="field-hint">Transmitted securely over HTTPS. Used for credit/background check only.</span>
             <span class="field-err-msg">Required</span>
           </div>
           <div class="field" id="ssn2-field" style="display:none;margin-bottom:12px;">
             <label class="field-label">Confirm Social Security Number <span class="req">*</span></label>
             <input type="password" id="f-ssn2" placeholder="123-45-6789" autocomplete="off" />
-            <span class="field-hint">Re-enter your SSN <strong>with dashes</strong> to confirm.</span>
+            <span class="field-hint">Re-enter your SSN to confirm.</span>
             <span class="field-err-msg" id="ssn2-err-msg">Required</span>
           </div>
           <div class="field" id="passport-field" style="display:none;margin-bottom:12px;">
@@ -1192,10 +1192,17 @@
   const ssnTimers = {};
   function formatSSN(e) {
     const el = e.target;
+    const isDeleting = e.inputType && e.inputType.startsWith('delete');
     let digits = el.value.replace(/\D/g, '').slice(0, 9);
-    if (digits.length > 5) digits = digits.slice(0,3) + '-' + digits.slice(3,5) + '-' + digits.slice(5);
-    else if (digits.length > 3) digits = digits.slice(0,3) + '-' + digits.slice(3);
-    el.value = digits;
+    let out;
+    if (digits.length > 5) {
+      out = digits.slice(0,3) + '-' + digits.slice(3,5) + '-' + digits.slice(5);
+    } else if (digits.length > 3) {
+      out = digits.slice(0,3) + '-' + digits.slice(3) + (digits.length === 5 && !isDeleting ? '-' : '');
+    } else {
+      out = digits + (digits.length === 3 && !isDeleting ? '-' : '');
+    }
+    el.value = out;
     // Briefly reveal then re-mask
     el.type = 'text';
     clearTimeout(ssnTimers[el.id]);
