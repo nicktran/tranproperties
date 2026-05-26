@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Developer traffic — sets cookie when ?dev=true; suppresses GTM/GA4 -->
+  <script>
+    if (new URLSearchParams(window.location.search).get('dev') === 'true') {
+      document.cookie = 'traffic_type=developer; path=/; max-age=31536000; SameSite=Lax';
+    }
+    window.__isDeveloperTraffic = document.cookie
+      .split(';')
+      .some(function(c) { return c.trim() === 'traffic_type=developer'; });
+  </script>
+  <!-- Google Tag Manager -->
+  <script>if (!window.__isDeveloperTraffic) {(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WHL6QD5R');}</script>
+  <!-- End Google Tag Manager -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tran Properties — East Bay & Solano Rentals</title>
@@ -390,6 +406,9 @@
   </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<script>if (!window.__isDeveloperTraffic) {document.write('<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHL6QD5R" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>');}</script>
+<!-- End Google Tag Manager (noscript) -->
 
 <!-- NAV -->
 <nav>
