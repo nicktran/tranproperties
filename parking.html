@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Developer traffic — sets cookie when ?dev=true; suppresses GTM/GA4 -->
+  <script>
+    if (new URLSearchParams(window.location.search).get('dev') === 'true') {
+      document.cookie = 'traffic_type=developer; path=/; max-age=31536000; SameSite=Lax';
+    }
+    window.__isDeveloperTraffic = document.cookie
+      .split(';')
+      .some(function(c) { return c.trim() === 'traffic_type=developer'; });
+  </script>
+  <!-- Google Tag Manager -->
+  <script>if (!window.__isDeveloperTraffic) {(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WHL6QD5R');}</script>
+  <!-- End Google Tag Manager -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parking Application — Tran Properties</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:        #ffffff;
+      --page:         #f8f7f5;
+      --border:       #e5e3df;
+      --border-mid:   #ccc9c4;
+      --text:         #1a1a1a;
+      --text-2:       #6b6866;
+      --text-3:       #9a9894;
+      --accent:       #b05c3a;
+      --accent-h:     #8c4830;
+      --accent-tint:  #f7ede8;
+      --accent-mid:   #d4957a;
+      --success:      #2e7d52;
+      --error:        #c0392b;
+      --radius:       10px;
+      --radius-lg:    14px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--page); color: var(--text); line-height: 1.6; font-size: 15px; -webkit-font-smoothing: antialiased; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--border); padding: 0 48px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+    .logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .logo-mark svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .logo-text { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-btn { background: var(--accent); color: #fff !important; padding: 8px 18px; border-radius: 7px; font-weight: 600 !important; font-size: 13px !important; transition: background 0.15s !important; }
+    .nav-btn:hover { background: var(--accent-h) !important; }
+
+    /* FORM */
+    .wrap { background: var(--white); border-top: 1px solid var(--border); min-height: calc(100vh - 60px); }
+    .inner { max-width: 640px; margin: 0 auto; padding: 72px 48px; }
+
+    .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .page-title { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 8px; }
+    .page-sub { color: var(--text-2); font-size: 0.95rem; line-height: 1.7; margin-bottom: 36px; }
+
+    .section-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .fields-group { margin-bottom: 32px; }
+
+    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-label { font-size: 13px; font-weight: 500; color: var(--text); }
+    .field-hint { font-size: 12px; color: var(--text-2); }
+    .field-err-msg { font-size: 11px; color: var(--error); display: none; }
+    .field.has-err .field-err-msg { display: block; }
+    .req { color: var(--accent); }
+
+    input[type="text"], input[type="email"], input[type="tel"], input[type="date"] {
+      height: 42px; padding: 0 13px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text); background: var(--white);
+      outline: none; transition: border-color 0.15s;
+    }
+    input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, input[type="date"]:focus { border-color: var(--accent); }
+    input.err { border-color: var(--error); }
+
+    input[type="file"] {
+      padding: 9px 13px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text-2);
+      background: var(--white); cursor: pointer; outline: none; transition: border-color 0.15s;
+      width: 100%;
+    }
+    input[type="file"]:focus { border-color: var(--accent); }
+    input[type="file"].err { border-color: var(--error); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .date-note { font-size: 12px; color: var(--text-2); margin-top: 6px; }
+    #date-err { font-size: 12px; color: var(--error); margin-top: 6px; display: none; }
+
+    .btn { display: inline-block; padding: 11px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.15s; border: none; font-family: 'Inter', sans-serif; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: var(--accent-h); }
+    .btn-accent:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-mid); }
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-2); background: var(--white); }
+
+    .form-actions { display: flex; justify-content: flex-end; margin-top: 32px; }
+
+    /* SUCCESS */
+    .success { display: none; text-align: center; padding: 64px 20px; }
+    .success.on { display: block; }
+    .success-icon { width: 56px; height: 56px; background: #e8f5ee; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
+    .success-icon svg { width: 24px; height: 24px; stroke: var(--success); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .success h2 { font-size: 1.4rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+    .success p { font-size: 14px; color: var(--text-2); max-width: 380px; margin: 0 auto 24px; }
+    .success-detail { background: var(--page); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; display: inline-block; text-align: left; max-width: 360px; width: 100%; margin-bottom: 24px; }
+    .success-row { display: flex; gap: 10px; font-size: 13px; padding: 5px 0; color: var(--text-2); }
+    .success-row + .success-row { border-top: 1px solid var(--border); }
+
+    /* FOOTER */
+    footer { background: #1a1a1a; color: #a09e9b; padding: 40px 48px; font-size: 13px; text-align: center; }
+    footer a { color: #a09e9b; text-decoration: none; }
+    footer a:hover { color: #fff; }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      .inner { padding: 40px 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      footer { padding: 32px 16px; }
+    }
+  </style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<script>if (!window.__isDeveloperTraffic) {document.write('<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WHL6QD5R" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>');}</script>
+<!-- End Google Tag Manager (noscript) -->
+
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+    </div>
+    <span class="logo-text">Tran Properties</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">← Back to listings</a></li>
+  </ul>
+</nav>
+
+<div class="wrap">
+  <div class="inner">
+    <div class="eyebrow">Parking</div>
+    <h1 class="page-title">Parking application</h1>
+    <p class="page-sub">Please upload the required documents and specify your desired lease dates. Minimum lease is 6 months with the possibility of extension.</p>
+
+    <div id="form-body">
+      <!-- Contact -->
+      <div class="fields-group">
+        <div class="section-label">Your information</div>
+        <div class="form-grid">
+          <div class="field" id="fg-first">
+            <label class="field-label">First name <span class="req">*</span></label>
+            <input type="text" id="p-first" placeholder="Jane" />
+            <span class="field-err-msg">Required</span>
+          </div>
+          <div class="field" id="fg-last">
+            <label class="field-label">Last name <span class="req">*</span></label>
+            <input type="text" id="p-last" placeholder="Smith" />
+            <span class="field-err-msg">Required</span>
+          </div>
+          <div class="field" id="fg-email">
+            <label class="field-label">Email <span class="req">*</span></label>
+            <input type="email" id="p-email" placeholder="jane@example.com" />
+            <span class="field-err-msg">Enter a valid email</span>
+          </div>
+          <div class="field" id="fg-phone">
+            <label class="field-label">Phone <span class="req">*</span></label>
+            <input type="tel" id="p-phone" placeholder="(510) 555-0100" />
+            <span class="field-err-msg">Required</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documents -->
+      <div class="fields-group">
+        <div class="section-label">Required documents</div>
+        <div class="field" id="fg-dl">
+          <label class="field-label">Driver's license <span class="req">*</span></label>
+          <input type="file" id="p-dl" accept="image/*,.pdf" />
+          <span class="field-hint">JPG, PNG, or PDF — max 10 MB</span>
+          <span class="field-err-msg">Please upload your driver's license</span>
+        </div>
+        <div class="field" id="fg-ins">
+          <label class="field-label">Proof of insurance <span class="req">*</span></label>
+          <input type="file" id="p-ins" accept="image/*,.pdf" />
+          <span class="field-hint">Current policy declaration page — JPG, PNG, or PDF</span>
+          <span class="field-err-msg">Please upload your insurance document</span>
+        </div>
+        <div class="field" id="fg-reg">
+          <label class="field-label">Vehicle registration <span class="req">*</span></label>
+          <input type="file" id="p-reg" accept="image/*,.pdf" />
+          <span class="field-hint">Current registration — JPG, PNG, or PDF</span>
+          <span class="field-err-msg">Please upload your vehicle registration</span>
+        </div>
+      </div>
+
+      <!-- Lease dates -->
+      <div class="fields-group">
+        <div class="section-label">Lease duration</div>
+        <div class="form-grid">
+          <div class="field" id="fg-start">
+            <label class="field-label">Start date <span class="req">*</span></label>
+            <input type="date" id="p-start" />
+            <span class="field-err-msg">Required</span>
+          </div>
+          <div class="field" id="fg-end">
+            <label class="field-label">End date <span class="req">*</span></label>
+            <input type="date" id="p-end" />
+            <span class="field-err-msg">Required</span>
+          </div>
+        </div>
+        <div class="date-note">Minimum 6 months. Extension available upon request.</div>
+        <div id="date-err">End date must be at least 6 months after the start date.</div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-accent" id="submit-btn" onclick="submitParking()">Submit application →</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success" id="success-screen">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>Application submitted</h2>
+      <p>We've received your parking application and will be in touch within 1–2 business days.</p>
+      <div class="success-detail">
+        <div class="success-row">👤 <span id="s-name"></span></div>
+        <div class="success-row">📧 <span id="s-email"></span></div>
+        <div class="success-row">📅 <span id="s-dates"></span></div>
+      </div>
+      <a href="/" class="btn btn-ghost">← Back to listings</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Tran Properties · <a href="/">tranproperties.com</a> · <a href="mailto:nicktran@nicktran.com">nicktran@nicktran.com</a></p>
+</footer>
+
+<!-- Netlify form detection -->
+<form name="parking-application" data-netlify="true" data-netlify-honeypot="bot-field" enctype="multipart/form-data" hidden>
+  <input type="hidden" name="form-name" value="parking-application" />
+  <input name="first-name" /><input name="last-name" /><input name="email" /><input name="phone" />
+  <input name="driver-license" type="file" /><input name="insurance" type="file" /><input name="vehicle-registration" type="file" />
+  <input name="lease-start" /><input name="lease-end" />
+</form>
+
+<script>
+  // Set min date on start to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('p-start').min = today;
+  document.getElementById('p-start').addEventListener('change', updateEndMin);
+
+  function updateEndMin() {
+    const start = document.getElementById('p-start').value;
+    if (!start) return;
+    const minEnd = new Date(start);
+    minEnd.setMonth(minEnd.getMonth() + 6);
+    document.getElementById('p-end').min = minEnd.toISOString().split('T')[0];
+  }
+
+  function req(id) {
+    const el = document.getElementById(id);
+    const grp = el.closest('.field');
+    const valid = el.value.trim() !== '';
+    el.classList.toggle('err', !valid);
+    grp && grp.classList.toggle('has-err', !valid);
+    return valid;
+  }
+
+  function reqFile(id) {
+    const el = document.getElementById(id);
+    const grp = el.closest('.field');
+    const valid = el.files && el.files.length > 0;
+    el.classList.toggle('err', !valid);
+    grp && grp.classList.toggle('has-err', !valid);
+    return valid;
+  }
+
+  function validateDates() {
+    const start = document.getElementById('p-start').value;
+    const end = document.getElementById('p-end').value;
+    const errEl = document.getElementById('date-err');
+    if (!start || !end) return false;
+    const startDate = new Date(start);
+    const minEnd = new Date(start);
+    minEnd.setMonth(minEnd.getMonth() + 6);
+    const endDate = new Date(end);
+    if (endDate < minEnd) {
+      errEl.style.display = 'block';
+      return false;
+    }
+    errEl.style.display = 'none';
+    return true;
+  }
+
+  function submitParking() {
+    let ok = true;
+    ok = req('p-first') & ok;
+    ok = req('p-last') & ok;
+    // Email
+    const emailEl = document.getElementById('p-email');
+    const emailGrp = emailEl.closest('.field');
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value);
+    emailEl.classList.toggle('err', !emailValid);
+    emailGrp && emailGrp.classList.toggle('has-err', !emailValid);
+    if (!emailValid) ok = false;
+
+    ok = req('p-phone') & ok;
+    ok = reqFile('p-dl') & ok;
+    ok = reqFile('p-ins') & ok;
+    ok = reqFile('p-reg') & ok;
+    ok = req('p-start') & ok;
+    ok = req('p-end') & ok;
+    if (ok && !validateDates()) ok = false;
+    if (!ok) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Submitting…';
+    btn.disabled = true;
+
+    const fd = new FormData();
+    fd.append('form-name', 'parking-application');
+    fd.append('first-name', document.getElementById('p-first').value.trim());
+    fd.append('last-name', document.getElementById('p-last').value.trim());
+    fd.append('email', document.getElementById('p-email').value.trim());
+    fd.append('phone', document.getElementById('p-phone').value.trim());
+    fd.append('driver-license', document.getElementById('p-dl').files[0]);
+    fd.append('insurance', document.getElementById('p-ins').files[0]);
+    fd.append('vehicle-registration', document.getElementById('p-reg').files[0]);
+    fd.append('lease-start', document.getElementById('p-start').value);
+    fd.append('lease-end', document.getElementById('p-end').value);
+
+    fetch('/', { method: 'POST', body: fd })
+      .then(() => {
+        document.getElementById('form-body').style.display = 'none';
+        const sc = document.getElementById('success-screen');
+        sc.classList.add('on');
+        document.getElementById('s-name').textContent =
+          document.getElementById('p-first').value + ' ' + document.getElementById('p-last').value;
+        document.getElementById('s-email').textContent = document.getElementById('p-email').value;
+        const fmt = d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        document.getElementById('s-dates').textContent =
+          fmt(document.getElementById('p-start').value) + ' – ' + fmt(document.getElementById('p-end').value);
+        sc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      })
+      .catch(() => {
+        btn.textContent = 'Submit application →';
+        btn.disabled = false;
+        alert('Something went wrong. Please try again or email nicktran@nicktran.com directly.');
+      });
+  }
+</script>
+</body>
+</html>
