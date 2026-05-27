@@ -190,19 +190,19 @@
           <label class="field-label">Driver's license <span class="req">*</span></label>
           <input type="file" id="p-dl" accept="image/*,.pdf" />
           <span class="field-hint">JPG, PNG, or PDF — max 10 MB</span>
-          <span class="field-err-msg">Please upload your driver's license</span>
+          <span class="field-err-msg" data-default-msg="Please upload your driver's license">Please upload your driver's license</span>
         </div>
         <div class="field" id="fg-ins">
           <label class="field-label">Proof of insurance <span class="req">*</span></label>
           <input type="file" id="p-ins" accept="image/*,.pdf" />
           <span class="field-hint">Current policy declaration page — JPG, PNG, or PDF</span>
-          <span class="field-err-msg">Please upload your insurance document</span>
+          <span class="field-err-msg" data-default-msg="Please upload your insurance document">Please upload your insurance document</span>
         </div>
         <div class="field" id="fg-reg">
           <label class="field-label">Vehicle registration <span class="req">*</span></label>
           <input type="file" id="p-reg" accept="image/*,.pdf" />
           <span class="field-hint">Current registration — JPG, PNG, or PDF</span>
-          <span class="field-err-msg">Please upload your vehicle registration</span>
+          <span class="field-err-msg" data-default-msg="Please upload your vehicle registration">Please upload your vehicle registration</span>
         </div>
       </div>
 
@@ -282,13 +282,30 @@
     return valid;
   }
 
+  const MAX_FILE_MB = 10;
+  const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
+
   function reqFile(id) {
     const el = document.getElementById(id);
     const grp = el.closest('.field');
-    const valid = el.files && el.files.length > 0;
-    el.classList.toggle('err', !valid);
-    grp && grp.classList.toggle('has-err', !valid);
-    return valid;
+    const errMsg = grp.querySelector('.field-err-msg');
+    const hasFile = el.files && el.files.length > 0;
+    if (!hasFile) {
+      errMsg.textContent = errMsg.dataset.defaultMsg || errMsg.textContent;
+      el.classList.add('err');
+      grp.classList.add('has-err');
+      return false;
+    }
+    if (el.files[0].size > MAX_FILE_BYTES) {
+      errMsg.textContent = `File too large — max ${MAX_FILE_MB} MB`;
+      el.classList.add('err');
+      grp.classList.add('has-err');
+      return false;
+    }
+    errMsg.textContent = errMsg.dataset.defaultMsg || errMsg.textContent;
+    el.classList.remove('err');
+    grp.classList.remove('has-err');
+    return true;
   }
 
   function validateDates() {
