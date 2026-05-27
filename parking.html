@@ -345,8 +345,9 @@
     fd.append('lease-start', document.getElementById('p-start').value);
     fd.append('lease-end', document.getElementById('p-end').value);
 
-    fetch('/', { method: 'POST', body: fd })
-      .then(() => {
+    fetch('/parking.html', { method: 'POST', body: fd })
+      .then(res => {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         document.getElementById('form-body').style.display = 'none';
         const sc = document.getElementById('success-screen');
         sc.classList.add('on');
