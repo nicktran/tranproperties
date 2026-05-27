@@ -363,7 +363,7 @@
     fd.append('lease-start', document.getElementById('p-start').value);
     fd.append('lease-end', document.getElementById('p-end').value);
 
-    fetch(window.location.pathname, { method: 'POST', body: fd })
+    fetch('/', { method: 'POST', body: fd })
       .then(res => {
         if (!res.ok) throw new Error('HTTP ' + res.status + ' — please try again or email nicktran@nicktran.com');
         document.getElementById('form-body').style.display = 'none';
