@@ -352,6 +352,7 @@
 
     const fd = new FormData();
     fd.append('form-name', 'parking-application');
+    fd.append('bot-field', '');
     fd.append('first-name', document.getElementById('p-first').value.trim());
     fd.append('last-name', document.getElementById('p-last').value.trim());
     fd.append('email', document.getElementById('p-email').value.trim());
@@ -364,7 +365,7 @@
 
     fetch(window.location.pathname, { method: 'POST', body: fd })
       .then(res => {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' — please try again or email nicktran@nicktran.com');
         document.getElementById('form-body').style.display = 'none';
         const sc = document.getElementById('success-screen');
         sc.classList.add('on');
@@ -376,10 +377,10 @@
           fmt(document.getElementById('p-start').value) + ' – ' + fmt(document.getElementById('p-end').value);
         sc.scrollIntoView({ behavior: 'smooth', block: 'start' });
       })
-      .catch(() => {
+      .catch(err => {
         btn.textContent = 'Submit application →';
         btn.disabled = false;
-        alert('Something went wrong. Please try again or email nicktran@nicktran.com directly.');
+        alert('Something went wrong (' + err.message + '). Please try again or email nicktran@nicktran.com directly.');
       });
   }
 </script>
