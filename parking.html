@@ -155,7 +155,7 @@
     <h1 class="page-title">Parking application</h1>
     <p class="page-sub">Please upload the required documents and specify your desired lease dates. Minimum lease is 6 months with the possibility of extension.</p>
 
-    <form id="parking-form" name="parking-application" data-netlify="true" data-netlify-honeypot="bot-field" enctype="multipart/form-data" method="POST" action="/parking?success=1">
+    <form id="parking-form" name="parking-application" data-netlify="true" data-netlify-honeypot="bot-field" enctype="multipart/form-data" method="POST" action="/parking-success">
       <input type="hidden" name="form-name" value="parking-application" />
       <input type="hidden" name="bot-field" />
 
@@ -233,20 +233,6 @@
       </div>
     </form>
 
-    <!-- SUCCESS -->
-    <div class="success" id="success-screen">
-      <div class="success-icon">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <h2>Application submitted</h2>
-      <p>We've received your parking application and will be in touch within 1–2 business days.</p>
-      <div class="success-detail">
-        <div class="success-row">👤 <span id="s-name"></span></div>
-        <div class="success-row">📧 <span id="s-email"></span></div>
-        <div class="success-row">📅 <span id="s-dates"></span></div>
-      </div>
-      <a href="/" class="btn btn-ghost">← Back to listings</a>
-    </div>
   </div>
 </div>
 
@@ -255,19 +241,6 @@
 </footer>
 
 <script>
-  // Show success screen if redirected back after Netlify submission
-  const _params = new URLSearchParams(window.location.search);
-  if (_params.has('success')) {
-    const stored = JSON.parse(sessionStorage.getItem('parking-submission') || '{}');
-    document.getElementById('parking-form').style.display = 'none';
-    const sc = document.getElementById('success-screen');
-    sc.classList.add('on');
-    document.getElementById('s-name').textContent = stored.name || '';
-    document.getElementById('s-email').textContent = stored.email || '';
-    document.getElementById('s-dates').textContent = stored.dates || '';
-    sessionStorage.removeItem('parking-submission');
-  }
-
   // Set min date on start to today
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('p-start').min = today;
