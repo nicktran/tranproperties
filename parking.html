@@ -155,29 +155,32 @@
     <h1 class="page-title">Parking application</h1>
     <p class="page-sub">Please upload the required documents and specify your desired lease dates. Minimum lease is 6 months with the possibility of extension.</p>
 
-    <div id="form-body">
+    <form id="parking-form" name="parking-application" data-netlify="true" data-netlify-honeypot="bot-field" enctype="multipart/form-data" method="POST" action="/parking?success=1">
+      <input type="hidden" name="form-name" value="parking-application" />
+      <input type="hidden" name="bot-field" />
+
       <!-- Contact -->
       <div class="fields-group">
         <div class="section-label">Your information</div>
         <div class="form-grid">
           <div class="field" id="fg-first">
             <label class="field-label">First name <span class="req">*</span></label>
-            <input type="text" id="p-first" placeholder="Jane" />
+            <input type="text" id="p-first" name="first-name" placeholder="Jane" />
             <span class="field-err-msg">Required</span>
           </div>
           <div class="field" id="fg-last">
             <label class="field-label">Last name <span class="req">*</span></label>
-            <input type="text" id="p-last" placeholder="Smith" />
+            <input type="text" id="p-last" name="last-name" placeholder="Smith" />
             <span class="field-err-msg">Required</span>
           </div>
           <div class="field" id="fg-email">
             <label class="field-label">Email <span class="req">*</span></label>
-            <input type="email" id="p-email" placeholder="jane@example.com" />
+            <input type="email" id="p-email" name="email" placeholder="jane@example.com" />
             <span class="field-err-msg">Enter a valid email</span>
           </div>
           <div class="field" id="fg-phone">
             <label class="field-label">Phone <span class="req">*</span></label>
-            <input type="tel" id="p-phone" placeholder="(510) 555-0100" />
+            <input type="tel" id="p-phone" name="phone" placeholder="(510) 555-0100" />
             <span class="field-err-msg">Required</span>
           </div>
         </div>
@@ -188,19 +191,19 @@
         <div class="section-label">Required documents</div>
         <div class="field" id="fg-dl">
           <label class="field-label">Driver's license <span class="req">*</span></label>
-          <input type="file" id="p-dl" accept="image/*,.pdf" />
+          <input type="file" id="p-dl" name="driver-license" accept="image/*,.pdf" />
           <span class="field-hint">JPG, PNG, or PDF — max 10 MB</span>
           <span class="field-err-msg" data-default-msg="Please upload your driver's license">Please upload your driver's license</span>
         </div>
         <div class="field" id="fg-ins">
           <label class="field-label">Proof of insurance <span class="req">*</span></label>
-          <input type="file" id="p-ins" accept="image/*,.pdf" />
+          <input type="file" id="p-ins" name="insurance" accept="image/*,.pdf" />
           <span class="field-hint">Current policy declaration page — JPG, PNG, or PDF</span>
           <span class="field-err-msg" data-default-msg="Please upload your insurance document">Please upload your insurance document</span>
         </div>
         <div class="field" id="fg-reg">
           <label class="field-label">Vehicle registration <span class="req">*</span></label>
-          <input type="file" id="p-reg" accept="image/*,.pdf" />
+          <input type="file" id="p-reg" name="vehicle-registration" accept="image/*,.pdf" />
           <span class="field-hint">Current registration — JPG, PNG, or PDF</span>
           <span class="field-err-msg" data-default-msg="Please upload your vehicle registration">Please upload your vehicle registration</span>
         </div>
@@ -212,12 +215,12 @@
         <div class="form-grid">
           <div class="field" id="fg-start">
             <label class="field-label">Start date <span class="req">*</span></label>
-            <input type="date" id="p-start" />
+            <input type="date" id="p-start" name="lease-start" />
             <span class="field-err-msg">Required</span>
           </div>
           <div class="field" id="fg-end">
             <label class="field-label">End date <span class="req">*</span></label>
-            <input type="date" id="p-end" />
+            <input type="date" id="p-end" name="lease-end" />
             <span class="field-err-msg">Required</span>
           </div>
         </div>
@@ -226,9 +229,9 @@
       </div>
 
       <div class="form-actions">
-        <button class="btn btn-accent" id="submit-btn" onclick="submitParking()">Submit application →</button>
+        <button type="submit" class="btn btn-accent" id="submit-btn">Submit application →</button>
       </div>
-    </div>
+    </form>
 
     <!-- SUCCESS -->
     <div class="success" id="success-screen">
@@ -251,15 +254,20 @@
   <p>© 2025 Tran Properties · <a href="/">tranproperties.com</a> · <a href="mailto:nicktran@nicktran.com">nicktran@nicktran.com</a></p>
 </footer>
 
-<!-- Netlify form detection -->
-<form name="parking-application" data-netlify="true" data-netlify-honeypot="bot-field" enctype="multipart/form-data" hidden>
-  <input type="hidden" name="form-name" value="parking-application" />
-  <input name="first-name" /><input name="last-name" /><input name="email" /><input name="phone" />
-  <input name="driver-license" type="file" /><input name="insurance" type="file" /><input name="vehicle-registration" type="file" />
-  <input name="lease-start" /><input name="lease-end" />
-</form>
-
 <script>
+  // Show success screen if redirected back after Netlify submission
+  const _params = new URLSearchParams(window.location.search);
+  if (_params.has('success')) {
+    const stored = JSON.parse(sessionStorage.getItem('parking-submission') || '{}');
+    document.getElementById('parking-form').style.display = 'none';
+    const sc = document.getElementById('success-screen');
+    sc.classList.add('on');
+    document.getElementById('s-name').textContent = stored.name || '';
+    document.getElementById('s-email').textContent = stored.email || '';
+    document.getElementById('s-dates').textContent = stored.dates || '';
+    sessionStorage.removeItem('parking-submission');
+  }
+
   // Set min date on start to today
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('p-start').min = today;
@@ -313,11 +321,9 @@
     const end = document.getElementById('p-end').value;
     const errEl = document.getElementById('date-err');
     if (!start || !end) return false;
-    const startDate = new Date(start);
     const minEnd = new Date(start);
     minEnd.setMonth(minEnd.getMonth() + 6);
-    const endDate = new Date(end);
-    if (endDate < minEnd) {
+    if (new Date(end) < minEnd) {
       errEl.style.display = 'block';
       return false;
     }
@@ -325,16 +331,16 @@
     return true;
   }
 
-  function submitParking() {
+  document.getElementById('parking-form').addEventListener('submit', function(e) {
+    e.preventDefault();
     let ok = true;
     ok = req('p-first') & ok;
     ok = req('p-last') & ok;
-    // Email
+
     const emailEl = document.getElementById('p-email');
-    const emailGrp = emailEl.closest('.field');
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value);
     emailEl.classList.toggle('err', !emailValid);
-    emailGrp && emailGrp.classList.toggle('has-err', !emailValid);
+    emailEl.closest('.field').classList.toggle('has-err', !emailValid);
     if (!emailValid) ok = false;
 
     ok = req('p-phone') & ok;
@@ -346,43 +352,18 @@
     if (ok && !validateDates()) ok = false;
     if (!ok) return;
 
-    const btn = document.getElementById('submit-btn');
-    btn.textContent = 'Submitting…';
-    btn.disabled = true;
+    // Store details in sessionStorage so success screen can show them after redirect
+    const fmt = d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    sessionStorage.setItem('parking-submission', JSON.stringify({
+      name:  document.getElementById('p-first').value.trim() + ' ' + document.getElementById('p-last').value.trim(),
+      email: document.getElementById('p-email').value.trim(),
+      dates: fmt(document.getElementById('p-start').value) + ' – ' + fmt(document.getElementById('p-end').value)
+    }));
 
-    const fd = new FormData();
-    fd.append('form-name', 'parking-application');
-    fd.append('bot-field', '');
-    fd.append('first-name', document.getElementById('p-first').value.trim());
-    fd.append('last-name', document.getElementById('p-last').value.trim());
-    fd.append('email', document.getElementById('p-email').value.trim());
-    fd.append('phone', document.getElementById('p-phone').value.trim());
-    fd.append('driver-license', document.getElementById('p-dl').files[0]);
-    fd.append('insurance', document.getElementById('p-ins').files[0]);
-    fd.append('vehicle-registration', document.getElementById('p-reg').files[0]);
-    fd.append('lease-start', document.getElementById('p-start').value);
-    fd.append('lease-end', document.getElementById('p-end').value);
-
-    fetch('/', { method: 'POST', body: fd })
-      .then(res => {
-        if (!res.ok) throw new Error('HTTP ' + res.status + ' — please try again or email nicktran@nicktran.com');
-        document.getElementById('form-body').style.display = 'none';
-        const sc = document.getElementById('success-screen');
-        sc.classList.add('on');
-        document.getElementById('s-name').textContent =
-          document.getElementById('p-first').value + ' ' + document.getElementById('p-last').value;
-        document.getElementById('s-email').textContent = document.getElementById('p-email').value;
-        const fmt = d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        document.getElementById('s-dates').textContent =
-          fmt(document.getElementById('p-start').value) + ' – ' + fmt(document.getElementById('p-end').value);
-        sc.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      })
-      .catch(err => {
-        btn.textContent = 'Submit application →';
-        btn.disabled = false;
-        alert('Something went wrong (' + err.message + '). Please try again or email nicktran@nicktran.com directly.');
-      });
-  }
+    document.getElementById('submit-btn').textContent = 'Submitting…';
+    document.getElementById('submit-btn').disabled = true;
+    this.submit();
+  });
 </script>
 </body>
 </html>
