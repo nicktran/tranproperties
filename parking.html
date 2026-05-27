@@ -192,19 +192,19 @@
         <div class="field" id="fg-dl">
           <label class="field-label">Driver's license <span class="req">*</span></label>
           <input type="file" id="p-dl" name="driver-license" accept="image/*,.pdf" />
-          <span class="field-hint">JPG, PNG, or PDF — max 10 MB</span>
+          <span class="field-hint">JPG, PNG, or PDF — max 5 MB per file, 7 MB total</span>
           <span class="field-err-msg" data-default-msg="Please upload your driver's license">Please upload your driver's license</span>
         </div>
         <div class="field" id="fg-ins">
           <label class="field-label">Proof of insurance <span class="req">*</span></label>
           <input type="file" id="p-ins" name="insurance" accept="image/*,.pdf" />
-          <span class="field-hint">Current policy declaration page — JPG, PNG, or PDF</span>
+          <span class="field-hint">Current policy declaration page — JPG, PNG, or PDF — max 5 MB</span>
           <span class="field-err-msg" data-default-msg="Please upload your insurance document">Please upload your insurance document</span>
         </div>
         <div class="field" id="fg-reg">
           <label class="field-label">Vehicle registration <span class="req">*</span></label>
           <input type="file" id="p-reg" name="vehicle-registration" accept="image/*,.pdf" />
-          <span class="field-hint">Current registration — JPG, PNG, or PDF</span>
+          <span class="field-hint">Current registration — JPG, PNG, or PDF — max 5 MB</span>
           <span class="field-err-msg" data-default-msg="Please upload your vehicle registration">Please upload your vehicle registration</span>
         </div>
       </div>
@@ -263,8 +263,10 @@
     return valid;
   }
 
-  const MAX_FILE_MB = 10;
+  const MAX_FILE_MB = 5;
   const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
+  const MAX_TOTAL_MB = 7;
+  const MAX_TOTAL_BYTES = MAX_TOTAL_MB * 1024 * 1024;
 
   function reqFile(id) {
     const el = document.getElementById(id);
@@ -324,6 +326,16 @@
     ok = req('p-end') & ok;
     if (ok && !validateDates()) ok = false;
     if (!ok) return;
+
+    // Check combined file size stays under Netlify's ~8MB form limit
+    const totalBytes = ['p-dl','p-ins','p-reg'].reduce((sum, id) => {
+      const f = document.getElementById(id).files[0];
+      return sum + (f ? f.size : 0);
+    }, 0);
+    if (totalBytes > MAX_TOTAL_BYTES) {
+      alert(`Your files total ${(totalBytes/1024/1024).toFixed(1)} MB, which exceeds the ${MAX_TOTAL_MB} MB combined limit. Please compress or resize your images and try again.`);
+      return;
+    }
 
     // Store details in sessionStorage so success screen can show them after redirect
     const fmt = d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
