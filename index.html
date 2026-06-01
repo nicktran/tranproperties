@@ -279,6 +279,16 @@
     .rc-label.on .rc-box { border-color: var(--accent); background: var(--accent); }
     .rc-label.on .rc-box::after { content: '✓'; font-size: 9px; color: #fff; line-height: 1; }
 
+    /* App type cards */
+    .apptype-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px; }
+    .apptype-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 28px 20px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--white); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; gap: 8px; width: 100%; }
+    .apptype-card:hover { border-color: var(--accent-mid); background: var(--accent-tint); }
+    .apptype-card.on { border-color: var(--accent); background: var(--accent-tint); }
+    .apptype-icon { font-size: 32px; line-height: 1; margin-bottom: 4px; }
+    .apptype-title { font-size: 16px; font-weight: 600; color: var(--text); }
+    .apptype-desc { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+    @media (max-width: 500px) { .apptype-grid { grid-template-columns: 1fr; } }
+
     /* Property picker */
     .prop-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .prop-card { border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; cursor: pointer; transition: all 0.15s; background: var(--white); position: relative; }
@@ -627,18 +637,11 @@
       <!-- STEP 1 -->
       <div class="form-step active" id="fs-1">
         <div class="form-step-title">Let's get started</div>
-        <div class="form-step-sub">Tell us who's applying and which unit you're interested in.</div>
-        <div class="field" style="margin-bottom:24px;">
-          <label class="field-label">Applying as <span class="req">*</span></label>
-          <div class="radio-group" id="rg-apptype">
-            <label class="rc-label" onclick="pickAppType('tenant')"><input type="radio" name="app-type" value="tenant" /><span class="rc-dot"></span>Tenant</label>
-            <label class="rc-label" onclick="pickAppType('cosigner')"><input type="radio" name="app-type" value="cosigner" /><span class="rc-dot"></span>Co-signer</label>
-          </div>
-          <span id="apptype-err" style="display:none;font-size:11px;color:var(--error);margin-top:4px;">Required</span>
-        </div>
-        <div class="field-label" style="margin-bottom:10px;">Which unit? <span class="req">*</span></div>
-        <div class="prop-picker" style="grid-template-columns:1fr;">
-          <div class="prop-card on" id="pc-parker" onclick="selectUnit('parker')">
+        <div class="form-step-sub">You're applying for the following unit.</div>
+
+        <!-- Property (informational — already selected) -->
+        <div class="prop-picker" style="grid-template-columns:1fr;margin-bottom:32px;">
+          <div class="prop-card on" id="pc-parker">
             <div class="prop-check">✓</div>
             <div class="prop-hood">Downtown Berkeley</div>
             <div class="prop-addr">2032 Parker St, Unit A, Berkeley</div>
@@ -647,8 +650,29 @@
             <div class="prop-avail">● Available June 1, 2026</div>
           </div>
         </div>
-        <p id="prop-err" style="color:var(--error);font-size:12px;margin-top:10px;display:none;">Please select a property to continue.</p>
-        <div class="form-nav"><div></div><div class="form-nav-right"><button class="btn btn-accent" onclick="next(1)">Continue →</button></div></div>
+
+        <!-- App type — large cards, clicking auto-advances -->
+        <div class="field-label" style="margin-bottom:14px;">How are you applying? <span class="req">*</span></div>
+        <div class="apptype-grid">
+          <button type="button" class="apptype-card" id="atc-tenant" onclick="selectAppType('tenant')">
+            <div class="apptype-icon">🏠</div>
+            <div class="apptype-title">Tenant</div>
+            <div class="apptype-desc">I'm renting this unit and will live there</div>
+          </button>
+          <button type="button" class="apptype-card" id="atc-cosigner" onclick="selectAppType('cosigner')">
+            <div class="apptype-icon">✍️</div>
+            <div class="apptype-title">Co-signer</div>
+            <div class="apptype-desc">I'm guaranteeing the lease for a tenant applicant</div>
+          </button>
+        </div>
+        <span id="apptype-err" style="display:none;font-size:11px;color:var(--error);margin-top:8px;">Please select one to continue.</span>
+
+        <!-- Hidden radios preserved for session state restore -->
+        <div style="display:none;" id="rg-apptype">
+          <label class="rc-label"><input type="radio" name="app-type" value="tenant" /><span class="rc-dot"></span>Tenant</label>
+          <label class="rc-label"><input type="radio" name="app-type" value="cosigner" /><span class="rc-dot"></span>Co-signer</label>
+        </div>
+        <p id="prop-err" style="display:none;"></p>
       </div>
 
       <!-- STEP 2 -->
@@ -1118,7 +1142,9 @@
       if (s.selProp) pickProp(s.selProp);
       if (s.appType) {
         const r = document.querySelector(`input[name="app-type"][value="${s.appType}"]`);
-        if (r) { r.checked = true; r.closest('.rc-label').classList.add('on'); }
+        if (r) r.checked = true;
+        const card = document.getElementById('atc-' + s.appType);
+        if (card) card.classList.add('on');
         pickAppType(s.appType);
       }
 
@@ -1190,6 +1216,18 @@
 
   function selectUnit(id) {
     pickProp(id);
+    document.getElementById('apply').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function selectAppType(type) {
+    // Update card visuals
+    document.querySelectorAll('.apptype-card').forEach(c => c.classList.remove('on'));
+    document.getElementById('atc-' + type).classList.add('on');
+    // Sync hidden radio for session state
+    const radio = document.querySelector(`input[name="app-type"][value="${type}"]`);
+    if (radio) radio.checked = true;
+    // Set app type and advance
+    pickAppType(type);
     next(1);
   }
 
@@ -1502,6 +1540,7 @@
     document.getElementById('ssn2-field').style.display = 'none';
     document.getElementById('passport-field').style.display = 'none';
     clearState();
+    document.querySelectorAll('.apptype-card').forEach(c => c.classList.remove('on'));
     document.getElementById('vehicle-fields').innerHTML = '';
     vehicleCount = 0;
     addVehicle();
