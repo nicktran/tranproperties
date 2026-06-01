@@ -1175,9 +1175,8 @@
   document.getElementById('form-body').addEventListener('input',  () => { clearTimeout(_saveTimer); _saveTimer = setTimeout(saveState, 300); });
   document.getElementById('form-body').addEventListener('change', () => { clearTimeout(_saveTimer); _saveTimer = setTimeout(saveState, 300); });
 
-  // Restore on load — if no saved vehicles, pre-render one empty card
+  // Restore on load (vehicles init happens after all functions are defined below)
   restoreState();
-  if (!document.querySelector('[id^="vehicle-"]')) addVehicle();
   // ──────────────────────────────────────────────────────────────────────────
 
   function goApply(id) { pickProp(id); document.getElementById('apply').scrollIntoView({ behavior: 'smooth' }); }
@@ -1680,6 +1679,9 @@
       alert('Something went wrong submitting your application. Please try again or email nicktran@nicktran.com directly.');
     });
   }
+
+  // Pre-render one vehicle card if none were restored from session
+  if (!document.querySelector('[id^="vehicle-"]')) addVehicle();
 </script>
 
 <!-- Netlify Forms detection — hidden, never shown to users -->
