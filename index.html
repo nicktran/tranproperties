@@ -613,7 +613,7 @@
     <div class="steps">
       <div class="step active" id="si-1"><div class="step-dot" id="sd-1">1</div><div class="step-label">Property</div></div>
       <div class="step" id="si-2"><div class="step-dot" id="sd-2">2</div><div class="step-label">Personal</div></div>
-      <div class="step" id="si-3"><div class="step-dot" id="sd-3">3</div><div class="step-label">Employment</div></div>
+      <div class="step" id="si-3"><div class="step-dot" id="sd-3">3</div><div class="step-label">Employment & savings</div></div>
       <div class="step" id="si-4"><div class="step-dot" id="sd-4">4</div><div class="step-label">History</div></div>
       <div class="step" id="si-5"><div class="step-dot" id="sd-5">5</div><div class="step-label">Review</div></div>
     </div>
@@ -718,7 +718,7 @@
 
       <!-- STEP 3 -->
       <div class="form-step" id="fs-3">
-        <div class="form-step-title">Employment & income</div>
+        <div class="form-step-title">Employment, income & savings</div>
         <div class="form-step-sub">Standard guideline is income of 2.5–3× the monthly rent.</div>
         <div class="field" style="margin-bottom:16px;">
           <label class="field-label">Employment status <span class="req">*</span></label>
@@ -736,6 +736,7 @@
           <div class="field"><label class="field-label">Employer / institution</label><input type="text" id="f-employer" placeholder="UC Berkeley, Genentech, etc." /></div>
           <div class="field"><label class="field-label">Title / role</label><input type="text" id="f-title" placeholder="Post-doctoral researcher" /></div>
           <div class="field"><label class="field-label">Gross monthly income <span class="req">*</span></label><input type="number" id="f-income" placeholder="e.g. 8000" min="0" /><span class="field-err-msg">Required</span></div>
+          <div class="field"><label class="field-label">Total savings <span class="req">*</span></label><input type="number" id="f-savings" placeholder="e.g. 15000" min="0" /><span class="field-err-msg">Required</span></div>
           <div class="field"><label class="field-label">Length at current role</label>
             <select id="f-tenure">
               <option value="">Select…</option>
@@ -844,7 +845,8 @@
       <h2>Application submitted</h2>
       <p style="margin-bottom:6px;">Your application is under review.</p>
       <p style="font-size:13px;color:var(--text-2);margin-bottom:4px;"><strong id="s-prop" style="color:var(--text);"></strong></p>
-      <p style="font-size:13px;color:var(--text-2);margin-bottom:28px;">Reply by <span id="s-date"></span> · <span id="s-email"></span></p>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:12px;">Reply by <span id="s-date"></span> · <span id="s-email"></span></p>
+      <p style="font-size:13px;color:var(--accent);background:var(--accent-tint);border:1px solid var(--accent-mid);border-radius:8px;padding:10px 14px;margin-bottom:28px;">⚠️ Please notify your current landlord that they may be contacted as part of the background check.</p>
 
       <div style="background:var(--white);border:1px solid var(--border);border-radius:12px;text-align:left;overflow:hidden;max-width:520px;margin:0 auto;">
 
@@ -1173,6 +1175,7 @@
       if (!emp) { document.getElementById('emp-err').style.display = 'block'; ok = false; }
       else document.getElementById('emp-err').style.display = 'none';
       ok = req('f-income') & ok;
+      ok = req('f-savings') & ok;
     }
     if (step === 4) {
       ok = req('f-prevaddr') & ok; ok = req('f-prevreason') & ok;
@@ -1395,6 +1398,7 @@
         ${v('f-employer') ? `<div class="summary-row"><span class="summary-key">Employer</span><span class="summary-val">${v('f-employer')}</span></div>` : ''}
         ${v('f-title') ? `<div class="summary-row"><span class="summary-key">Role</span><span class="summary-val">${v('f-title')}</span></div>` : ''}
         <div class="summary-row"><span class="summary-key">Monthly income</span><span class="summary-val">$${Number(v('f-income')||0).toLocaleString()}</span></div>
+        <div class="summary-row"><span class="summary-key">Total savings</span><span class="summary-val">$${Number(v('f-savings')||0).toLocaleString()}</span></div>
         <div class="summary-row"><span class="summary-key">Additional income</span><span class="summary-val">${addInc}</span></div>
       </div>
       ${appType !== 'cosigner' ? `
@@ -1449,6 +1453,7 @@
     set('employer',              v('f-employer'));
     set('job-title',             v('f-title'));
     set('monthly-income',        v('f-income'));
+    set('total-savings',         v('f-savings'));
     set('tenure',                v('f-tenure'));
     set('additional-income',     addInc);
     set('employment-ref-name',   v('f-ref-name'));
@@ -1526,6 +1531,7 @@
   <input name="employer" />
   <input name="job-title" />
   <input name="monthly-income" />
+  <input name="total-savings" />
   <input name="tenure" />
   <input name="additional-income" />
   <input name="employment-ref-name" />
