@@ -1074,6 +1074,96 @@
 
   let selProp = 'parker', consent = false, curStep = 1, appType = null;
 
+  // ── SESSION STATE ──────────────────────────────────────────────────────────
+  const STATE_KEY = 'tp-app-state';
+  const TEXT_IDS  = ['f-first','f-last','f-email','f-phone','f-dob','f-movein',
+                     'f-employer','f-title','f-income','f-savings','f-tenure',
+                     'f-ref-name','f-ref-phone','f-prevaddr','f-ll-name',
+                     'f-ll-phone','f-prevrent','f-prevdur','f-prevreason',
+                     'f-notes','f-passport'];
+  const RADIO_NAMES = ['app-type','occ','emp','id-type','evict','broke','bk'];
+
+  function saveState() {
+    try {
+      const state = { selProp, appType, curStep, consent, fields: {}, radios: {}, checks: [], roommates: {} };
+      TEXT_IDS.forEach(id => { const el = document.getElementById(id); if (el) state.fields[id] = el.value; });
+      RADIO_NAMES.forEach(name => { const el = document.querySelector(`input[name="${name}"]:checked`); if (el) state.radios[name] = el.value; });
+      state.checks = [...document.querySelectorAll('#cg-income input:checked')].map(c => c.value);
+      document.querySelectorAll('[id^="f-roommate-"]').forEach(el => { state.roommates[el.id] = el.value; });
+      sessionStorage.setItem(STATE_KEY, JSON.stringify(state));
+    } catch(e) {}
+  }
+
+  function restoreState() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('skip') || params.has('success')) return;
+      const raw = sessionStorage.getItem(STATE_KEY);
+      if (!raw) return;
+      const s = JSON.parse(raw);
+
+      // Property + app type
+      if (s.selProp) pickProp(s.selProp);
+      if (s.appType) {
+        const r = document.querySelector(`input[name="app-type"][value="${s.appType}"]`);
+        if (r) { r.checked = true; r.closest('.rc-label').classList.add('on'); }
+        pickAppType(s.appType);
+      }
+
+      // Occupants → generate roommate fields first
+      if (s.radios['occ']) {
+        const occ = parseInt(s.radios['occ']);
+        const r = document.querySelector(`input[name="occ"][value="${occ}"]`);
+        if (r) { r.checked = true; r.closest('.rc-label').classList.add('on'); }
+        updateRoommates(occ);
+      }
+
+      // Text / select fields
+      TEXT_IDS.forEach(id => { const el = document.getElementById(id); if (el && s.fields[id] !== undefined) el.value = s.fields[id]; });
+
+      // Roommate fields (rendered above)
+      Object.entries(s.roommates || {}).forEach(([id, val]) => { const el = document.getElementById(id); if (el) el.value = val; });
+
+      // Other radios
+      ['emp','id-type','evict','broke','bk'].forEach(name => {
+        if (!s.radios[name]) return;
+        const r = document.querySelector(`input[name="${name}"][value="${s.radios[name]}"]`);
+        if (!r) return;
+        r.checked = true;
+        r.closest('.rc-label').classList.add('on');
+        if (name === 'id-type') toggleIdFields(s.radios[name]);
+      });
+
+      // Checkboxes
+      document.querySelectorAll('#cg-income input[type="checkbox"]').forEach(cb => {
+        const on = (s.checks || []).includes(cb.value);
+        cb.checked = on;
+        cb.closest('.rc-label').classList.toggle('on', on);
+      });
+
+      // Consent
+      if (s.consent) {
+        consent = true;
+        document.getElementById('consent-box').classList.add('on');
+        document.getElementById('consent-lbl').classList.add('on');
+      }
+
+      // Navigate to saved step (after DOM settles)
+      if (s.curStep && s.curStep > 1) setTimeout(() => setStep(s.curStep), 50);
+    } catch(e) {}
+  }
+
+  function clearState() { try { sessionStorage.removeItem(STATE_KEY); } catch(e) {} }
+
+  // Auto-save on any field change
+  let _saveTimer;
+  document.getElementById('form-body').addEventListener('input',  () => { clearTimeout(_saveTimer); _saveTimer = setTimeout(saveState, 300); });
+  document.getElementById('form-body').addEventListener('change', () => { clearTimeout(_saveTimer); _saveTimer = setTimeout(saveState, 300); });
+
+  // Restore on load
+  restoreState();
+  // ──────────────────────────────────────────────────────────────────────────
+
   function goApply(id) { pickProp(id); document.getElementById('apply').scrollIntoView({ behavior: 'smooth' }); }
 
   function pickProp(id) {
@@ -1347,6 +1437,7 @@
     document.getElementById('ssn-field').style.display = 'none';
     document.getElementById('ssn2-field').style.display = 'none';
     document.getElementById('passport-field').style.display = 'none';
+    clearState();
     selProp = 'parker'; appType = null; consent = false;
     document.querySelectorAll('.prop-card').forEach(c => c.classList.remove('on'));
     document.getElementById('pc-parker').classList.add('on');
@@ -1498,6 +1589,7 @@
     // POST as multipart/form-data (browser sets boundary automatically)
     fetch('/', { method: 'POST', body: fd })
     .then(() => {
+      clearState();
       document.getElementById('form-body').style.display = 'none';
       document.getElementById('before-you-begin').style.display = 'none';
       document.getElementById('apply-header').style.display = 'none';
