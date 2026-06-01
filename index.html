@@ -1681,7 +1681,7 @@
   }
 
   // Pre-render one vehicle card if none were restored from session
-  if (!document.querySelector('[id^="vehicle-"]')) addVehicle();
+  if (vehicleCount === 0) addVehicle();
 </script>
 
 <!-- Netlify Forms detection — hidden, never shown to users -->
