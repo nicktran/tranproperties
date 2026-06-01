@@ -715,7 +715,7 @@
         <div style="margin-bottom:4px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
             <label class="field-label" style="margin:0;">Vehicles <span style="font-weight:400;color:var(--text-2);font-size:12px;">(optional)</span></label>
-            <button type="button" class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="addVehicle()">+ Add vehicle</button>
+            <button type="button" class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="addVehicle()">+ Add another vehicle</button>
           </div>
           <div id="vehicle-fields"></div>
         </div>
@@ -1175,8 +1175,9 @@
   document.getElementById('form-body').addEventListener('input',  () => { clearTimeout(_saveTimer); _saveTimer = setTimeout(saveState, 300); });
   document.getElementById('form-body').addEventListener('change', () => { clearTimeout(_saveTimer); _saveTimer = setTimeout(saveState, 300); });
 
-  // Restore on load
+  // Restore on load — if no saved vehicles, pre-render one empty card
   restoreState();
+  if (!document.querySelector('[id^="vehicle-"]')) addVehicle();
   // ──────────────────────────────────────────────────────────────────────────
 
   function goApply(id) { pickProp(id); document.getElementById('apply').scrollIntoView({ behavior: 'smooth' }); }
@@ -1504,6 +1505,7 @@
     clearState();
     document.getElementById('vehicle-fields').innerHTML = '';
     vehicleCount = 0;
+    addVehicle();
     selProp = 'parker'; appType = null; consent = false;
     document.querySelectorAll('.prop-card').forEach(c => c.classList.remove('on'));
     document.getElementById('pc-parker').classList.add('on');
