@@ -710,6 +710,16 @@
           <span id="occ-err" style="display:none;font-size:11px;color:var(--error);margin-top:4px;">Please select one</span>
         </div>
         <div id="roommate-fields"></div>
+
+        <hr class="rule" />
+        <div style="margin-bottom:4px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <label class="field-label" style="margin:0;">Vehicles <span style="font-weight:400;color:var(--text-2);font-size:12px;">(optional)</span></label>
+            <button type="button" class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="addVehicle()">+ Add vehicle</button>
+          </div>
+          <div id="vehicle-fields"></div>
+        </div>
+
         <div class="form-nav">
           <button class="btn btn-ghost" onclick="prev(2)">← Back</button>
           <div class="form-nav-right"><button class="btn btn-accent" onclick="next(2)">Continue →</button></div>
@@ -1090,6 +1100,7 @@
       RADIO_NAMES.forEach(name => { const el = document.querySelector(`input[name="${name}"]:checked`); if (el) state.radios[name] = el.value; });
       state.checks = [...document.querySelectorAll('#cg-income input:checked')].map(c => c.value);
       document.querySelectorAll('[id^="f-roommate-"]').forEach(el => { state.roommates[el.id] = el.value; });
+      state.vehicles = getVehicles();
       sessionStorage.setItem(STATE_KEY, JSON.stringify(state));
     } catch(e) {}
   }
@@ -1147,6 +1158,9 @@
         document.getElementById('consent-box').classList.add('on');
         document.getElementById('consent-lbl').classList.add('on');
       }
+
+      // Vehicles
+      if (s.vehicles && s.vehicles.length) s.vehicles.forEach(v => addVehicle(v));
 
       // Navigate to saved step (after DOM settles)
       if (s.curStep && s.curStep > 1) setTimeout(() => setStep(s.curStep), 50);
@@ -1373,6 +1387,55 @@
     container.innerHTML = html;
   }
 
+  // ── VEHICLES ──────────────────────────────────────────────────────────────
+  let vehicleCount = 0;
+
+  function addVehicle(data) {
+    vehicleCount++;
+    const n = vehicleCount;
+    const container = document.getElementById('vehicle-fields');
+    const div = document.createElement('div');
+    div.id = `vehicle-${n}`;
+    div.style.cssText = 'border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;position:relative;';
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:var(--text);">Vehicle ${n}</span>
+        ${n > 1 ? `<button type="button" onclick="removeVehicle(${n})" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text-2);padding:0;">✕ Remove</button>` : ''}
+      </div>
+      <div class="form-grid">
+        <div class="field"><label class="field-label">Make</label><input type="text" id="v-make-${n}" placeholder="Toyota" /></div>
+        <div class="field"><label class="field-label">Model</label><input type="text" id="v-model-${n}" placeholder="Camry" /></div>
+        <div class="field"><label class="field-label">Year</label><input type="number" id="v-year-${n}" placeholder="2020" min="1900" max="2099" /></div>
+        <div class="field"><label class="field-label">License plate</label><input type="text" id="v-plate-${n}" placeholder="7ABC123" style="text-transform:uppercase;" /></div>
+      </div>`;
+    container.appendChild(div);
+    if (data) {
+      if (data.make)  document.getElementById(`v-make-${n}`).value  = data.make;
+      if (data.model) document.getElementById(`v-model-${n}`).value = data.model;
+      if (data.year)  document.getElementById(`v-year-${n}`).value  = data.year;
+      if (data.plate) document.getElementById(`v-plate-${n}`).value = data.plate;
+    }
+  }
+
+  function removeVehicle(n) {
+    const el = document.getElementById(`vehicle-${n}`);
+    if (el) el.remove();
+  }
+
+  function getVehicles() {
+    const vehicles = [];
+    document.querySelectorAll('[id^="vehicle-"]').forEach(div => {
+      const n = div.id.split('-')[1];
+      const make  = (document.getElementById(`v-make-${n}`)?.value  || '').trim();
+      const model = (document.getElementById(`v-model-${n}`)?.value || '').trim();
+      const year  = (document.getElementById(`v-year-${n}`)?.value  || '').trim();
+      const plate = (document.getElementById(`v-plate-${n}`)?.value || '').trim();
+      if (make || model || year || plate) vehicles.push({ make, model, year, plate });
+    });
+    return vehicles;
+  }
+  // ──────────────────────────────────────────────────────────────────────────
+
   function toggleIdFields(type) {
     document.getElementById('ssn-field').style.display      = type === 'SSN'      ? '' : 'none';
     document.getElementById('ssn2-field').style.display     = type === 'SSN'      ? '' : 'none';
@@ -1438,6 +1501,8 @@
     document.getElementById('ssn2-field').style.display = 'none';
     document.getElementById('passport-field').style.display = 'none';
     clearState();
+    document.getElementById('vehicle-fields').innerHTML = '';
+    vehicleCount = 0;
     selProp = 'parker'; appType = null; consent = false;
     document.querySelectorAll('.prop-card').forEach(c => c.classList.remove('on'));
     document.getElementById('pc-parker').classList.add('on');
@@ -1497,6 +1562,7 @@
         ${idType ? `<div class="summary-row"><span class="summary-key">ID type</span><span class="summary-val">${idType.value === 'SSN' ? 'US Resident (SSN provided)' : 'International (Passport provided)'}</span></div>` : ''}
         ${photoFile ? `<div class="summary-row"><span class="summary-key">Photo ID</span><span class="summary-val">${photoFile.name}</span></div>` : ''}
       </div>
+      ${(() => { const veh = getVehicles(); return veh.length ? `<div class="summary-block"><div class="summary-head">Vehicles</div>${veh.map((v,i) => `<div class="summary-row"><span class="summary-key">Vehicle ${i+1}</span><span class="summary-val">${[v.year,v.make,v.model].filter(Boolean).join(' ')}${v.plate ? ' · ' + v.plate.toUpperCase() : ''}</span></div>`).join('')}</div>` : ''; })()}
       <div class="summary-block"><div class="summary-head">Employment</div>
         <div class="summary-row"><span class="summary-key">Status</span><span class="summary-val">${emp ? emp.value : '—'}</span></div>
         ${v('f-employer') ? `<div class="summary-row"><span class="summary-key">Employer</span><span class="summary-val">${v('f-employer')}</span></div>` : ''}
@@ -1562,6 +1628,8 @@
     set('additional-income',     addInc);
     set('employment-ref-name',   v('f-ref-name'));
     set('employment-ref-phone',  v('f-ref-phone'));
+    const vehicles = getVehicles();
+    if (vehicles.length) set('vehicles', vehicles.map((v,i) => `Vehicle ${i+1}: ${[v.year,v.make,v.model].filter(Boolean).join(' ')}${v.plate ? ' ('+v.plate.toUpperCase()+')' : ''}`).join(' | '));
     set('previous-address',      v('f-prevaddr'));
     set('landlord-name',         v('f-ll-name'));
     set('landlord-phone',        v('f-ll-phone'));
@@ -1641,6 +1709,7 @@
   <input name="additional-income" />
   <input name="employment-ref-name" />
   <input name="employment-ref-phone" />
+  <input name="vehicles" />
   <input name="previous-address" />
   <input name="landlord-name" />
   <input name="landlord-phone" />
