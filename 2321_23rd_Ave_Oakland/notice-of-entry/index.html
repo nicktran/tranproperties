@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Notice of Entry — 2321 23rd Ave</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
@@ -338,43 +339,105 @@
   .download-links {
     display: none;
     flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
   }
 
   .download-links.visible { display: flex; }
+
+  .download-ready-header {
+    background: var(--success-bg);
+    border: 1.5px solid #a8d5b5;
+    border-radius: var(--radius);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--success);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
 
   .download-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 1rem;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    background: var(--gold);
+    border: 2px solid #a07820;
+    border-radius: var(--radius);
     text-decoration: none;
-    color: var(--text);
-    font-size: 0.85rem;
+    color: var(--navy);
+    font-size: 0.9rem;
+    font-weight: 500;
     transition: all 0.15s;
+    box-shadow: 0 2px 8px rgba(200,149,42,0.3);
   }
 
-  .download-link:hover { border-color: var(--navy); background: var(--cream); }
+  .download-link:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(200,149,42,0.4); }
+  .download-link:active { transform: translateY(0); }
 
-  .download-link .dl-name { font-weight: 500; }
-  .download-link .dl-tenant { color: var(--muted); font-size: 0.78rem; margin-top: 1px; }
+  .download-link .dl-name { font-weight: 600; font-size: 0.95rem; }
+  .download-link .dl-tenant { color: rgba(26,39,68,0.65); font-size: 0.8rem; margin-top: 2px; }
 
   .dl-icon {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     background: var(--navy);
-    border-radius: 6px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 14px;
+    font-size: 18px;
     flex-shrink: 0;
   }
+
+  /* Confirm modal */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10,20,50,0.55);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(10,20,50,0.25);
+  }
+  .modal h3 { font-size: 1rem; font-weight: 500; color: var(--navy); margin-bottom: 1rem; }
+  .modal-row { display: flex; gap: 0.5rem; font-size: 0.85rem; padding: 0.45rem 0; border-bottom: 1px solid var(--border); color: var(--text); }
+  .modal-row:last-of-type { border-bottom: none; }
+  .modal-label { color: var(--muted); flex-shrink: 0; width: 90px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 1px; }
+  .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+  .modal-cancel { flex: 1; padding: 0.7rem; border: 1px solid var(--border); background: var(--cream); border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.875rem; color: var(--text); }
+  .modal-confirm { flex: 2; padding: 0.7rem; background: var(--navy); color: white; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.875rem; font-weight: 500; }
+  .modal-confirm:hover { background: var(--navy-light); }
+
+  /* Inline errors */
+  .inline-error {
+    display: none;
+    background: var(--error-bg);
+    border: 1px solid #f5c0c0;
+    color: var(--error);
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    font-size: 0.82rem;
+    margin-top: 0.75rem;
+  }
+  .inline-error.visible { display: block; }
+
+  /* Select all button */
+  .unit-chips-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  .select-all-btn { font-size: 0.75rem; font-weight: 500; color: var(--navy); background: none; border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.65rem; cursor: pointer; font-family: inherit; text-transform: none; letter-spacing: 0; transition: all 0.15s; }
+  .select-all-btn:hover { background: var(--cream); border-color: var(--navy); }
 
   .section-hint {
     font-size: 0.75rem;
@@ -423,7 +486,10 @@
   <div class="card">
     <div class="card-header"><span class="step">1</span> Select Apartments</div>
     <div class="card-body">
-      <p class="section-hint">Select one or more units. A separate notice will be generated for each.</p>
+      <div class="unit-chips-header">
+        <p class="section-hint" style="margin-bottom:0;">Select one or more units. A separate notice will be generated for each.</p>
+        <button type="button" class="select-all-btn" id="select-all-btn" onclick="toggleSelectAll()">Select All</button>
+      </div>
       <div class="unit-chips" id="unit-chips">
         <label class="unit-chip" data-unit="A">
           <input type="checkbox" value="A">
@@ -577,7 +643,7 @@
   </div>
 
   <!-- Generate -->
-  <button class="generate-btn" id="generate-btn" onclick="generateNotices()">
+  <button class="generate-btn" id="generate-btn" onclick="showConfirm()">
     Generate Notice(s) &rarr;
   </button>
 
@@ -586,8 +652,21 @@
     <span id="status-text">Generating PDFs&hellip;</span>
   </div>
 
+  <div class="inline-error" id="inline-error"></div>
   <div class="download-links" id="download-links"></div>
 
+</div>
+
+<!-- Confirm modal -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <h3>Confirm &amp; Generate</h3>
+    <div id="modal-summary"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmGenerate()">Generate PDFs →</button>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -616,12 +695,156 @@ tomorrow.setDate(today.getDate() + 2);
 document.getElementById('service-date').value = today.toISOString().split('T')[0];
 document.getElementById('entry-date').value = tomorrow.toISOString().split('T')[0];
 
+// ── SELECT ALL ──────────────────────────────────────────────────────────────
+function toggleSelectAll() {
+  const chips = [...document.querySelectorAll('.unit-chip')];
+  const allSelected = chips.every(c => c.querySelector('input').checked);
+  chips.forEach(chip => {
+    const cb = chip.querySelector('input');
+    cb.checked = !allSelected;
+    chip.classList.toggle('selected', !allSelected);
+  });
+  document.getElementById('select-all-btn').textContent = allSelected ? 'Select All' : 'Deselect All';
+  saveState();
+}
+
+// ── SESSION STATE ────────────────────────────────────────────────────────────
+const STATE_KEY = 'noe-2321-state';
+function saveState() {
+  try {
+    sessionStorage.setItem(STATE_KEY, JSON.stringify({
+      units: [...document.querySelectorAll('.unit-chip input:checked')].map(c => c.value),
+      entryDate: document.getElementById('entry-date').value,
+      timeStart: document.getElementById('entry-time-start').value,
+      timeEnd: document.getElementById('entry-time-end').value,
+      purposes: [...document.querySelectorAll('input[name="purpose"]:checked')].map(c => c.value),
+      purposeA: document.getElementById('purpose-text-A').value,
+      purposeB: document.getElementById('purpose-text-B').value,
+      purposeE: document.getElementById('purpose-text-E').value,
+      provider: document.getElementById('housing-provider').value,
+      servedBy: document.getElementById('served-by').value,
+      delivery: document.querySelector('input[name="delivery"]:checked')?.value || '',
+    }));
+  } catch(e) {}
+}
+function restoreState() {
+  try {
+    const raw = sessionStorage.getItem(STATE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    s.units?.forEach(u => {
+      const chip = document.querySelector(`.unit-chip[data-unit="${u}"]`);
+      if (chip) { chip.querySelector('input').checked = true; chip.classList.add('selected'); }
+    });
+    if (s.entryDate) document.getElementById('entry-date').value = s.entryDate;
+    if (s.timeStart) document.getElementById('entry-time-start').value = s.timeStart;
+    if (s.timeEnd)   document.getElementById('entry-time-end').value = s.timeEnd;
+    s.purposes?.forEach(p => {
+      const opt = document.getElementById('opt-' + p);
+      if (opt) {
+        opt.querySelector('input').checked = true;
+        opt.classList.add('selected');
+        if (['A','B','E'].includes(p)) document.getElementById('detail-' + p).style.display = 'block';
+      }
+    });
+    if (s.purposeA) document.getElementById('purpose-text-A').value = s.purposeA;
+    if (s.purposeB) document.getElementById('purpose-text-B').value = s.purposeB;
+    if (s.purposeE) document.getElementById('purpose-text-E').value = s.purposeE;
+    if (s.provider) document.getElementById('housing-provider').value = s.provider;
+    if (s.servedBy) document.getElementById('served-by').value = s.servedBy;
+    if (s.delivery) {
+      const r = document.querySelector(`input[name="delivery"][value="${s.delivery}"]`);
+      if (r) {
+        r.checked = true;
+        document.querySelectorAll('.delivery-option').forEach(o => o.classList.remove('selected'));
+        r.closest('.delivery-option').classList.add('selected');
+      }
+    }
+    const allSelected = [...document.querySelectorAll('.unit-chip')].every(c => c.querySelector('input').checked);
+    document.getElementById('select-all-btn').textContent = allSelected ? 'Deselect All' : 'Select All';
+  } catch(e) {}
+}
+restoreState();
+
+// Auto-save on any change
+document.querySelector('.container').addEventListener('change', saveState);
+document.querySelector('.container').addEventListener('input', saveState);
+
+// ── INLINE ERRORS ────────────────────────────────────────────────────────────
+function showInlineError(msg) {
+  const el = document.getElementById('inline-error');
+  el.textContent = msg;
+  el.classList.add('visible');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function clearInlineError() {
+  document.getElementById('inline-error').classList.remove('visible');
+}
+
+// ── CONFIRM MODAL ────────────────────────────────────────────────────────────
+let _pendingGenerate = false;
+
+function showConfirm() {
+  clearInlineError();
+  const selectedUnits = [...document.querySelectorAll('.unit-chip input:checked')].map(cb => cb.value);
+  const entryDate = document.getElementById('entry-date').value;
+  const timeStart = document.getElementById('entry-time-start').value;
+  const timeEnd = document.getElementById('entry-time-end').value;
+  const selectedPurposes = [...document.querySelectorAll('input[name="purpose"]:checked')].map(cb => cb.value);
+  const purposeTexts = {
+    A: document.getElementById('purpose-text-A').value.trim(),
+    B: document.getElementById('purpose-text-B').value.trim(),
+    E: document.getElementById('purpose-text-E').value.trim(),
+  };
+  const deliveryRadio = document.querySelector('input[name="delivery"]:checked');
+
+  // Validate first
+  if (!selectedUnits.length) return showInlineError('Please select at least one apartment.');
+  if (!entryDate) return showInlineError('Please select an entry date.');
+  if (!timeStart || !timeEnd) return showInlineError('Please set both start and end times.');
+  if (timeEnd <= timeStart) return showInlineError('End time must be after start time.');
+  if (!selectedPurposes.length) return showInlineError('Please select at least one purpose of entry.');
+  for (const p of selectedPurposes) {
+    if (['A','B','E'].includes(p) && !purposeTexts[p]) return showInlineError(`Please describe the purpose for section ${p}.`);
+  }
+  if (!deliveryRadio) return showInlineError('Please select a delivery method.');
+
+  const deliveryLabels = { '1': 'Personal service', '2': 'Substituted service', '3': 'Left at entry door', 'mail': 'Mail (6-day notice)' };
+  const purposeNames = selectedPurposes.map(p => {
+    const base = PURPOSE_LABELS[p];
+    return purposeTexts[p] ? `${base}: ${purposeTexts[p]}` : base;
+  }).join(', ');
+
+  document.getElementById('modal-summary').innerHTML = `
+    <div class="modal-row"><span class="modal-label">Units</span><span>Apt ${selectedUnits.join(', Apt ')}</span></div>
+    <div class="modal-row"><span class="modal-label">Entry date</span><span>${formatDate(entryDate)}</span></div>
+    <div class="modal-row"><span class="modal-label">Time</span><span>${formatTime(timeStart)} – ${formatTime(timeEnd)}</span></div>
+    <div class="modal-row"><span class="modal-label">Purpose</span><span>${purposeNames}</span></div>
+    <div class="modal-row"><span class="modal-label">Delivery</span><span>${deliveryLabels[deliveryRadio.value] || deliveryRadio.value}</span></div>
+  `;
+  _pendingGenerate = true;
+  document.getElementById('confirm-modal').classList.add('visible');
+}
+
+function closeModal() {
+  document.getElementById('confirm-modal').classList.remove('visible');
+  _pendingGenerate = false;
+}
+
+function confirmGenerate() {
+  closeModal();
+  generateNotices();
+}
+
 // Unit chip toggles
 document.querySelectorAll('.unit-chip').forEach(chip => {
   chip.addEventListener('click', () => {
     const cb = chip.querySelector('input[type="checkbox"]');
     cb.checked = !cb.checked;
     chip.classList.toggle('selected', cb.checked);
+    const allSelected = [...document.querySelectorAll('.unit-chip')].every(c => c.querySelector('input').checked);
+    document.getElementById('select-all-btn').textContent = allSelected ? 'Deselect All' : 'Select All';
+    saveState();
   });
 });
 
@@ -674,15 +897,11 @@ async function generateNotices() {
   const housingProvider = document.getElementById('housing-provider').value;
   const servedBy = document.getElementById('served-by').value;
   const deliveryRadio = document.querySelector('input[name="delivery"]:checked');
-  const serviceDate = document.getElementById('service-date').value;
 
-  if (!selectedUnits.length) return showError('Please select at least one apartment.');
-  if (!entryDate) return showError('Please select an entry date.');
-  if (!selectedPurposes.length) return showError('Please select at least one purpose of entry.');
-  for (const p of selectedPurposes) {
-    if (['A','B','E'].includes(p) && !purposeTexts[p]) return showError(`Please describe the purpose for section ${p}.`);
-  }
-  if (!deliveryRadio) return showError('Please select a delivery method.');
+  // Refresh service date to today at generate time (#6)
+  const todayStr = new Date().toISOString().split('T')[0];
+  document.getElementById('service-date').value = todayStr;
+  const serviceDate = todayStr;
 
   const btn = document.getElementById('generate-btn');
   btn.disabled = true;
@@ -708,8 +927,12 @@ async function generateNotices() {
       links.push({ unit, tenant, url, filename: `Notice_of_Entry_Apt_${unit}.pdf` });
     }
 
-    showStatus('success', `${links.length} notice${links.length > 1 ? 's' : ''} ready for download.`);
+    showStatus('success', `${links.length} notice${links.length > 1 ? 's' : ''} ready — tap each to download.`);
     const container = document.getElementById('download-links');
+    const header = document.createElement('div');
+    header.className = 'download-ready-header';
+    header.innerHTML = `<span style="font-size:1.2rem;">✅</span> ${links.length} PDF${links.length > 1 ? 's' : ''} ready — tap to download`;
+    container.appendChild(header);
     links.forEach(({ unit, tenant, url, filename }) => {
       const a = document.createElement('a');
       a.href = url;
@@ -717,13 +940,14 @@ async function generateNotices() {
       a.className = 'download-link';
       a.innerHTML = `
         <div>
-          <div class="dl-name">Notice of Entry — Apt ${unit}</div>
+          <div class="dl-name">📄 Notice of Entry — Apt ${unit}</div>
           <div class="dl-tenant">${tenant}</div>
         </div>
-        <div class="dl-icon">&#8595;</div>`;
+        <div class="dl-icon">⬇</div>`;
       container.appendChild(a);
     });
     container.classList.add('visible');
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } catch(e) {
     showError('Failed to generate PDF: ' + e.message);
     console.error(e);
@@ -845,6 +1069,7 @@ function showStatus(type, message) {
 
 function showError(msg) {
   showStatus('error', msg);
+  showInlineError(msg);
   document.getElementById('generate-btn').disabled = false;
 }
 </script>
