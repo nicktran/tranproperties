@@ -434,7 +434,7 @@
   <ul class="nav-links">
     <li><a href="#listings">Listings</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#apply" class="nav-btn">Apply now</a></li>
+    <li><a href="mailto:nicktran@nicktran.com" class="nav-btn">Contact us</a></li>
   </ul>
 </nav>
 
@@ -446,7 +446,7 @@
       <h1>Quality rentals.<br><mark>Owner-managed.</mark></h1>
       <p class="hero-sub">Studios, one- and two-bedrooms, and single-family homes across Berkeley, Oakland, Vallejo, Fairfield, and Vacaville. Owner-managed — no middlemen, no runaround.</p>
       <div class="hero-actions">
-        <a href="#listings" class="btn btn-accent">View available units</a>
+        <a href="#listings" class="btn btn-accent">View our properties</a>
         <a href="#about" class="btn btn-ghost">How we work</a>
       </div>
     </div>
@@ -466,9 +466,9 @@
 <!-- LISTINGS -->
 <div id="listings" class="listings-wrap">
   <div style="max-width:1180px;margin:0 auto;padding:40px 48px 24px;">
-    <div class="eyebrow">Available now</div>
-    <h2 class="section-title">Current openings</h2>
-    <p class="section-sub">We operate across Berkeley, Oakland, Vallejo, Fairfield, and Vacaville — reach out about future availability.</p>
+    <div class="eyebrow">No current openings</div>
+    <h2 class="section-title">Our properties</h2>
+    <p class="section-sub">All units are currently occupied. We operate across Berkeley, Oakland, Vallejo, Fairfield, and Vacaville — <a href="mailto:nicktran@nicktran.com" style="color:var(--accent);">contact us</a> to be notified when something becomes available.</p>
   </div>
   <div class="listings-stack">
 
@@ -485,7 +485,7 @@
           <img src="parker-7.jpg" alt="Bedroom 2" onerror="this.style.display='none'" />
           <img src="parker-8.jpg" alt="Bedroom 3" onerror="this.style.display='none'" />
           <span class="gallery-tag">Downtown Berkeley</span>
-          <span class="gallery-avail">Available Jun 1</span>
+          <span class="gallery-avail" style="background:var(--text-2);">Currently Rented</span>
           <span class="gallery-counter" id="gallery-counter-parker">1 / 8</span>
           <button class="gallery-arrow gallery-prev" onclick="galleryNav('parker',-1,event)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
           <button class="gallery-arrow gallery-next" onclick="galleryNav('parker',1,event)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
@@ -528,7 +528,7 @@
           </div>
           <p class="listing-note"><strong>Included:</strong> Water & garbage &nbsp;·&nbsp; <strong>Tenant pays:</strong> Electric &nbsp;·&nbsp; No pets &nbsp;·&nbsp; No smoking &nbsp;·&nbsp; 1-year lease</p>
           <div class="listing-actions">
-            <button class="btn btn-accent" onclick="goApply('parker')">Apply now</button>
+            <a href="mailto:nicktran@nicktran.com" class="btn btn-accent">Contact for availability</a>
             <a href="https://www.zillow.com/homedetails/2032-Parker-St-UNIT-A-Berkeley-CA-94704/452121392_zpid/" target="_blank" class="btn btn-ghost">Zillow</a>
           </div>
         </div>
@@ -650,7 +650,7 @@
             <div class="prop-addr">2032 Parker St, Unit A, Berkeley</div>
             <div class="prop-meta">2 bed · 1 bath · 1,295 sq ft</div>
             <div class="prop-price">$3,295 <span>/ mo</span></div>
-            <div class="prop-avail">● Available June 1, 2026</div>
+            <div class="prop-avail" style="color:var(--text-2);">● Currently rented</div>
           </div>
         </div>
 
@@ -974,9 +974,9 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Apply</h4>
+        <h4>Applications</h4>
         <ul>
-          <li><a href="#apply" onclick="goApply('parker')">Apply — Parker St</a></li>
+          <li><a href="mailto:nicktran@nicktran.com">Inquire about availability</a></li>
           <li><a href="/parking.html">Parking application</a></li>
         </ul>
       </div>
@@ -1110,7 +1110,7 @@
     parker:   { address: '2032 Parker St, Unit A, Berkeley, CA 94704', hood: 'Downtown Berkeley', price: '$3,295/mo', meta: '2 bed · 1 bath · 1,295 sq ft', avail: 'June 1, 2026' }
   };
 
-  let selProp = 'parker', consent = false, curStep = 1, appType = null;
+  let selProp = 'parker', consent = false, curStep = 1, appType = null, isRoommateMode = false;
 
   // ── SESSION STATE ──────────────────────────────────────────────────────────
   const STATE_KEY = 'tp-app-state';
@@ -1210,14 +1210,12 @@
   // Roommate-addition mode: ?roommate=true skips Step 1, pre-selects Tenant
   (function initRoommateMode() {
     if (!new URLSearchParams(window.location.search).has('roommate')) return;
+    isRoommateMode = true;
     const r = document.querySelector('input[name="app-type"][value="tenant"]');
     if (r) r.checked = true;
     const card = document.getElementById('atc-tenant');
     if (card) card.classList.add('on');
     pickAppType('tenant');
-    // Update prop banner to show roommate context
-    document.getElementById('prop-banner-text').textContent = '2032 Parker St, Unit A — Roommate Addition';
-    document.getElementById('prop-banner').style.display = 'block';
     setTimeout(() => setStep(2), 0);
   })();
   // ──────────────────────────────────────────────────────────────────────────
@@ -1265,7 +1263,8 @@
     curStep = n;
     const banner = document.getElementById('prop-banner');
     if (n > 1 && selProp) {
-      document.getElementById('prop-banner-text').textContent = PROPS[selProp].address;
+      const bannerText = isRoommateMode ? PROPS[selProp].address + ' — Roommate Addition' : PROPS[selProp].address;
+      document.getElementById('prop-banner-text').textContent = bannerText;
       banner.style.display = '';
     } else {
       banner.style.display = 'none';
