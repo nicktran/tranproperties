@@ -1561,9 +1561,9 @@
 
     document.getElementById('summary-out').innerHTML = `
       <div class="summary-block"><div class="summary-head">Application</div>
-        <div class="summary-row"><span class="summary-key">Type</span><span class="summary-val">${appType === 'cosigner' ? 'Co-signer' : 'Tenant'}</span></div>
-        <div class="summary-row"><span class="summary-key">Property</span><span class="summary-val">${p.address}</span></div>
-        <div class="summary-row"><span class="summary-key">Rent</span><span class="summary-val">${p.price}</span></div>
+        <div class="summary-row"><span class="summary-key">Type</span><span class="summary-val">${isRoommateMode ? 'Roommate Addition' : appType === 'cosigner' ? 'Co-signer' : 'Tenant'}</span></div>
+        <div class="summary-row"><span class="summary-key">Property</span><span class="summary-val">${isRoommateMode ? v('f-roommate-property') : p.address}</span></div>
+        ${isRoommateMode ? '' : `<div class="summary-row"><span class="summary-key">Rent</span><span class="summary-val">${p.price}</span></div>`}
         <div class="summary-row"><span class="summary-key">Move-in</span><span class="summary-val">${v('f-movein') || p.avail}</span></div>
       </div>
       <div class="summary-block"><div class="summary-head">Personal</div>
