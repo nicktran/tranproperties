@@ -567,7 +567,7 @@
     </div>
 
     <div id="prop-banner" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 16px;margin-bottom:24px;font-size:13px;color:var(--text-light);">
-      Applying for: <strong id="prop-banner-text" style="color:var(--text);"></strong>
+      <span id="prop-banner-label">Applying for:</span> <strong id="prop-banner-text" style="color:var(--text);"></strong>
     </div>
 
     <div id="form-body">
@@ -1210,7 +1210,8 @@
     curStep = n;
     const banner = document.getElementById('prop-banner');
     if (n > 1 && selProp) {
-      const bannerText = isRoommateMode ? PROPS[selProp].address + ' — Roommate Addition' : PROPS[selProp].address;
+      const bannerText = isRoommateMode ? 'Roommate Addition' : PROPS[selProp].address;
+      document.getElementById('prop-banner-label').textContent = isRoommateMode ? 'Application type:' : 'Applying for:';
       document.getElementById('prop-banner-text').textContent = bannerText;
       banner.style.display = '';
     } else {
