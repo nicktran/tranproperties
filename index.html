@@ -503,10 +503,6 @@
       </div>
       <div class="listing-card-bottom">
         <div class="listing-body">
-          <div class="listing-price-row">
-            <span class="listing-price">$3,295</span>
-            <span class="listing-price-mo">/ month</span>
-          </div>
           <div class="listing-addr"><a href="https://www.google.com/maps/search/2032+Parker+St,+Unit+A,+Berkeley,+CA+94704" target="_blank" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;">2032 Parker St, Unit A, Berkeley, CA 94704</a></div>
           <hr class="listing-divider" />
           <div class="listing-stats">
@@ -682,6 +678,16 @@
       <div class="form-step" id="fs-2">
         <div class="form-step-title">Personal information</div>
         <div class="form-step-sub">Your contact details and current living situation.</div>
+
+        <!-- Roommate mode only: property address -->
+        <div id="roommate-property-field" style="display:none;margin-bottom:16px;">
+          <div class="field" style="grid-column:1/-1;">
+            <label class="field-label">Property address <span class="req">*</span></label>
+            <input type="text" id="f-roommate-property" placeholder="e.g. 2032 Parker St, Unit A, Berkeley" />
+            <span class="field-err-msg">Required</span>
+          </div>
+        </div>
+
         <div class="form-grid" style="margin-bottom:16px;">
           <div class="field"><label class="field-label">First name <span class="req">*</span></label><input type="text" id="f-first" placeholder="Jane" /><span class="field-err-msg">Required</span></div>
           <div class="field"><label class="field-label">Last name <span class="req">*</span></label><input type="text" id="f-last" placeholder="Smith" /><span class="field-err-msg">Required</span></div>
@@ -1114,7 +1120,7 @@
 
   // ── SESSION STATE ──────────────────────────────────────────────────────────
   const STATE_KEY = 'tp-app-state';
-  const TEXT_IDS  = ['f-first','f-last','f-email','f-phone','f-dob','f-movein',
+  const TEXT_IDS  = ['f-roommate-property','f-first','f-last','f-email','f-phone','f-dob','f-movein',
                      'f-employer','f-title','f-income','f-savings','f-tenure',
                      'f-ref-name','f-ref-phone','f-prevaddr','f-ll-name',
                      'f-ll-phone','f-prevrent','f-prevdur','f-prevreason',
@@ -1211,6 +1217,7 @@
   (function initRoommateMode() {
     if (!new URLSearchParams(window.location.search).has('roommate')) return;
     isRoommateMode = true;
+    document.getElementById('roommate-property-field').style.display = '';
     const r = document.querySelector('input[name="app-type"][value="tenant"]');
     if (r) r.checked = true;
     const card = document.getElementById('atc-tenant');
@@ -1294,6 +1301,7 @@
       else document.getElementById('apptype-err').style.display = 'none';
     }
     if (step === 2) {
+      if (isRoommateMode) ok = req('f-roommate-property') & ok;
       ok = req('f-first') & ok; ok = req('f-last') & ok;
       ok = email('f-email') & ok; ok = req('f-phone') & ok;
       ok = req('f-dob') & ok; ok = req('f-movein') & ok;
@@ -1665,6 +1673,7 @@
     set('form-name',             'rental-application');
     set('application-type',      appType || '');
     set('app-subtype',           isRoommate ? 'roommate-addition' : '');
+    set('roommate-property',     isRoommate ? v('f-roommate-property') : '');
     set('property',              p.address);
     set('first-name',            v('f-first'));
     set('last-name',             v('f-last'));
@@ -1752,6 +1761,7 @@
   <input name="bot-field" />
   <input name="application-type" />
   <input name="app-subtype" />
+  <input name="roommate-property" />
   <input name="property" />
   <input name="first-name" />
   <input name="last-name" />
