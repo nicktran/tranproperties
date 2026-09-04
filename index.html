@@ -1136,7 +1136,7 @@
   function restoreState() {
     try {
       const params = new URLSearchParams(window.location.search);
-      if (params.has('skip') || params.has('success')) return;
+      if (params.has('skip') || params.has('success') || params.has('roommate')) return;
       const raw = sessionStorage.getItem(STATE_KEY);
       if (!raw) return;
       const s = JSON.parse(raw);
@@ -1206,6 +1206,20 @@
 
   // Restore on load (vehicles init happens after all functions are defined below)
   restoreState();
+
+  // Roommate-addition mode: ?roommate=true skips Step 1, pre-selects Tenant
+  (function initRoommateMode() {
+    if (!new URLSearchParams(window.location.search).has('roommate')) return;
+    const r = document.querySelector('input[name="app-type"][value="tenant"]');
+    if (r) r.checked = true;
+    const card = document.getElementById('atc-tenant');
+    if (card) card.classList.add('on');
+    pickAppType('tenant');
+    // Update prop banner to show roommate context
+    document.getElementById('prop-banner-text').textContent = '2032 Parker St, Unit A — Roommate Addition';
+    document.getElementById('prop-banner').style.display = 'block';
+    setTimeout(() => setStep(2), 0);
+  })();
   // ──────────────────────────────────────────────────────────────────────────
 
   function goApply(id) { pickProp(id); document.getElementById('apply').scrollIntoView({ behavior: 'smooth' }); }
@@ -1648,8 +1662,10 @@
     const fd = new FormData();
     const set = (k, val) => fd.append(k, val ?? '');
 
+    const isRoommate = new URLSearchParams(window.location.search).has('roommate');
     set('form-name',             'rental-application');
     set('application-type',      appType || '');
+    set('app-subtype',           isRoommate ? 'roommate-addition' : '');
     set('property',              p.address);
     set('first-name',            v('f-first'));
     set('last-name',             v('f-last'));
@@ -1736,6 +1752,7 @@
   <input type="hidden" name="form-name" value="rental-application" />
   <input name="bot-field" />
   <input name="application-type" />
+  <input name="app-subtype" />
   <input name="property" />
   <input name="first-name" />
   <input name="last-name" />

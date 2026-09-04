@@ -6,70 +6,81 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Notice of Entry — 2321 23rd Ave</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --navy: #1a2744;
-    --navy-light: #253560;
-    --gold: #c8952a;
-    --gold-light: #f0c96a;
-    --cream: #faf8f4;
-    --white: #ffffff;
-    --border: #e2ddd5;
-    --muted: #7a7570;
-    --text: #1a1814;
-    --success: #2d6a4f;
-    --success-bg: #d8f3dc;
-    --error: #9d2b2b;
-    --error-bg: #fde8e8;
-    --radius: 10px;
-    --shadow: 0 2px 12px rgba(26,39,68,0.08);
+    --white:       #ffffff;
+    --page:        #f8f7f5;
+    --border:      #e5e3df;
+    --border-mid:  #ccc9c4;
+    --text:        #1a1a1a;
+    --text-2:      #6b6866;
+    --text-3:      #9a9894;
+    --accent:      #b05c3a;
+    --accent-h:    #8c4830;
+    --accent-tint: #f7ede8;
+    --accent-mid:  #d4957a;
+    --success:     #2e7d52;
+    --success-bg:  #e8f5ee;
+    --error:       #c0392b;
+    --error-bg:    #fde8e8;
+    --radius:      10px;
+    --radius-lg:   14px;
+    --shadow:      0 2px 12px rgba(0,0,0,0.06);
+    /* legacy aliases */
+    --navy:        var(--text);
+    --navy-light:  #333333;
+    --gold:        var(--accent);
+    --gold-light:  var(--accent-tint);
+    --cream:       var(--page);
+    --muted:       var(--text-2);
   }
 
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
+    font-family: 'Inter', sans-serif;
+    background: var(--page);
     color: var(--text);
     min-height: 100vh;
     padding: 0;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
   }
 
+  /* ── NAV (Tran Properties design system) ── */
   header {
-    background: var(--navy);
-    color: white;
-    padding: 1.5rem 2rem;
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    justify-content: space-between;
   }
-
+  .header-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
   .header-badge {
-    width: 48px;
-    height: 48px;
-    background: var(--gold);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
+  .header-badge svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .header-logo-text { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .header-back { font-size: 13px; color: var(--text-2); text-decoration: none; font-weight: 500; transition: color 0.15s; }
+  .header-back:hover { color: var(--text); }
 
-  header h1 {
-    font-size: 1.1rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
+  /* ── PAGE TITLE BAND ── */
+  .page-band {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
   }
-
-  header p {
-    font-size: 0.8rem;
-    opacity: 0.6;
-    margin-top: 2px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.05em;
-  }
+  .page-band-inner { max-width: 760px; margin: 0 auto; }
+  .page-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .page-title { font-size: clamp(1.3rem, 2.5vw, 1.75rem); font-weight: 600; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; }
+  .page-sub { font-size: 13px; color: var(--text-2); margin-top: 4px; }
 
   .container {
     max-width: 760px;
@@ -87,7 +98,7 @@
   }
 
   .card-header {
-    background: var(--navy);
+    background: var(--accent);
     color: white;
     padding: 0.75rem 1.25rem;
     display: flex;
@@ -138,9 +149,9 @@
   }
 
   input, select, textarea {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: 6px;
     padding: 0.55rem 0.75rem;
     background: var(--cream);
@@ -151,8 +162,8 @@
 
   input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: var(--navy);
-    box-shadow: 0 0 0 3px rgba(26,39,68,0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(176,92,58,0.12);
     background: white;
   }
 
@@ -177,11 +188,11 @@
     background: var(--cream);
   }
 
-  .purpose-option:hover { border-color: var(--navy); background: white; }
+  .purpose-option:hover { border-color: var(--accent-mid); background: var(--white); }
 
   .purpose-option.selected {
-    border-color: var(--navy);
-    background: #eef1f8;
+    border-color: var(--accent);
+    background: var(--accent-tint);
   }
 
   .purpose-option input[type="radio"],
@@ -202,7 +213,7 @@
     margin-top: 1px;
   }
 
-  .purpose-option.selected .purpose-letter { background: var(--gold); color: var(--navy); }
+  .purpose-option.selected .purpose-letter { background: var(--white); color: var(--accent); border: 1.5px solid var(--accent); }
 
   .purpose-desc {
     font-size: 0.82rem;
@@ -243,8 +254,8 @@
     font-size: 0.85rem;
   }
 
-  .delivery-option:hover { border-color: var(--navy); background: white; }
-  .delivery-option.selected { border-color: var(--navy); background: #eef1f8; font-weight: 500; }
+  .delivery-option:hover { border-color: var(--accent-mid); background: var(--white); }
+  .delivery-option.selected { border-color: var(--accent); background: var(--accent-tint); font-weight: 500; }
   .delivery-option input[type="radio"] { display: none; }
 
   .radio-dot {
@@ -257,8 +268,8 @@
   }
 
   .delivery-option.selected .radio-dot {
-    border-color: var(--navy);
-    background: var(--navy);
+    border-color: var(--accent);
+    background: var(--accent);
     box-shadow: inset 0 0 0 3px white;
   }
 
@@ -282,8 +293,8 @@
     min-width: 130px;
   }
 
-  .unit-chip:hover { border-color: var(--navy); background: white; }
-  .unit-chip.selected { border-color: var(--navy); background: #eef1f8; }
+  .unit-chip:hover { border-color: var(--accent-mid); background: var(--white); }
+  .unit-chip.selected { border-color: var(--accent); background: var(--accent-tint); }
   .unit-chip input[type="checkbox"] { display: none; }
 
   .unit-name { font-weight: 500; font-size: 0.82rem; }
@@ -291,12 +302,12 @@
 
   .generate-btn {
     width: 100%;
-    background: var(--navy);
+    background: var(--accent);
     color: white;
     border: none;
     border-radius: var(--radius);
     padding: 1rem;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
@@ -305,7 +316,7 @@
     margin-top: 0.5rem;
   }
 
-  .generate-btn:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,39,68,0.2); }
+  .generate-btn:hover { background: var(--accent-h); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(176,92,58,0.3); }
   .generate-btn:active { transform: translateY(0); }
   .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
@@ -320,15 +331,15 @@
   }
 
   .status.visible { display: flex; }
-  .status.loading { background: #eef1f8; color: var(--navy); border: 1px solid #c5cfe8; }
+  .status.loading { background: var(--accent-tint); color: var(--accent); border: 1px solid var(--accent-mid); }
   .status.success { background: var(--success-bg); color: var(--success); border: 1px solid #a8d5b5; }
   .status.error { background: var(--error-bg); color: var(--error); border: 1px solid #f5c0c0; }
 
   .spinner {
     width: 18px;
     height: 18px;
-    border: 2px solid rgba(26,39,68,0.2);
-    border-top-color: var(--navy);
+    border: 2px solid rgba(176,92,58,0.2);
+    border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     flex-shrink: 0;
@@ -363,22 +374,22 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.25rem;
-    background: var(--gold);
-    border: 2px solid #a07820;
+    background: var(--accent);
+    border: 2px solid var(--accent-h);
     border-radius: var(--radius);
     text-decoration: none;
-    color: var(--navy);
+    color: white;
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.15s;
-    box-shadow: 0 2px 8px rgba(200,149,42,0.3);
+    box-shadow: 0 2px 8px rgba(176,92,58,0.25);
   }
 
-  .download-link:hover { background: var(--gold-light); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(200,149,42,0.4); }
+  .download-link:hover { background: var(--accent-h); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(176,92,58,0.35); }
   .download-link:active { transform: translateY(0); }
 
   .download-link .dl-name { font-weight: 600; font-size: 0.95rem; }
-  .download-link .dl-tenant { color: rgba(26,39,68,0.65); font-size: 0.8rem; margin-top: 2px; }
+  .download-link .dl-tenant { color: rgba(255,255,255,0.75); font-size: 0.8rem; margin-top: 2px; }
 
   .dl-icon {
     width: 40px;
@@ -418,8 +429,8 @@
   .modal-label { color: var(--muted); flex-shrink: 0; width: 90px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 1px; }
   .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
   .modal-cancel { flex: 1; padding: 0.7rem; border: 1px solid var(--border); background: var(--cream); border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.875rem; color: var(--text); }
-  .modal-confirm { flex: 2; padding: 0.7rem; background: var(--navy); color: white; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.875rem; font-weight: 500; }
-  .modal-confirm:hover { background: var(--navy-light); }
+  .modal-confirm { flex: 2; padding: 0.7rem; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.875rem; font-weight: 500; }
+  .modal-confirm:hover { background: var(--accent-h); }
 
   /* Inline errors */
   .inline-error {
