@@ -534,7 +534,7 @@
 </div>
 
 <!-- APPLICATION -->
-<div id="apply" class="apply-wrap">
+<div id="apply" class="apply-wrap" style="display:none;">
   <div class="apply-inner">
     <div id="apply-header">
     <div class="eyebrow">Ready to apply?</div>
@@ -1156,6 +1156,7 @@
   (function initRoommateMode() {
     if (!new URLSearchParams(window.location.search).has('roommate')) return;
     isRoommateMode = true;
+    document.getElementById('apply').style.display = '';
     document.getElementById('roommate-property-field').style.display = '';
     const r = document.querySelector('input[name="app-type"][value="tenant"]');
     if (r) r.checked = true;
@@ -1332,10 +1333,12 @@
   const _params = new URLSearchParams(window.location.search);
   if (_params.has('skip')) {
     appType = 'tenant';
+    document.getElementById('apply').style.display = '';
     window.addEventListener('load', () => { document.getElementById('apply').scrollIntoView(); setStep(5); buildSummary(); });
   }
   if (_params.has('success')) {
     appType = 'tenant';
+    document.getElementById('apply').style.display = '';
     window.addEventListener('load', () => {
       const p = PROPS[selProp];
       document.getElementById('form-body').style.display = 'none';
