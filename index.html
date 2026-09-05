@@ -584,7 +584,6 @@
             <div class="prop-hood">Downtown Berkeley</div>
             <div class="prop-addr">2032 Parker St, Unit A, Berkeley</div>
             <div class="prop-meta">2 bed · 1 bath · 1,295 sq ft</div>
-            <div class="prop-price">$3,295 <span>/ mo</span></div>
             <div class="prop-avail" style="color:var(--text-2);">● Currently rented</div>
           </div>
         </div>
@@ -1162,6 +1161,8 @@
     if (r) r.checked = true;
     const card = document.getElementById('atc-tenant');
     if (card) card.classList.add('on');
+    const cosignerCard = document.getElementById('atc-cosigner');
+    if (cosignerCard) cosignerCard.style.display = 'none';
     pickAppType('tenant');
     setTimeout(() => setStep(2), 0);
   })();
@@ -1217,7 +1218,7 @@
     } else {
       banner.style.display = 'none';
     }
-    document.getElementById('before-you-begin').style.display = n === 1 ? '' : 'none';
+    document.getElementById('before-you-begin').style.display = n === 1 && !isRoommateMode ? '' : 'none';
     document.getElementById('apply').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -1231,6 +1232,7 @@
   function prev(from) {
     let to = from - 1;
     if (appType === 'cosigner' && to === 4) to = 3;
+    if (isRoommateMode && to < 2) return;
     setStep(to);
   }
 
@@ -1540,6 +1542,7 @@
   }
 
   function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   function buildSummary() {
     const p = PROPS[selProp];
@@ -1558,38 +1561,38 @@
     const roommateRows = [];
     for (let i = 1; i < occNum; i++) {
       const rm = document.getElementById(`f-roommate-${i}`);
-      if (rm && rm.value.trim()) roommateRows.push(`<div class="summary-row"><span class="summary-key">Roommate ${i}</span><span class="summary-val">${rm.value.trim()}</span></div>`);
+      if (rm && rm.value.trim()) roommateRows.push(`<div class="summary-row"><span class="summary-key">Roommate ${i}</span><span class="summary-val">${esc(rm.value.trim())}</span></div>`);
     }
 
     document.getElementById('summary-out').innerHTML = `
       <div class="summary-block"><div class="summary-head">Application</div>
         <div class="summary-row"><span class="summary-key">Type</span><span class="summary-val">${isRoommateMode ? 'Roommate Addition' : appType === 'cosigner' ? 'Co-signer' : 'Tenant'}</span></div>
-        <div class="summary-row"><span class="summary-key">Property</span><span class="summary-val">${isRoommateMode ? v('f-roommate-property') : p.address}</span></div>
+        <div class="summary-row"><span class="summary-key">Property</span><span class="summary-val">${isRoommateMode ? esc(v('f-roommate-property')) : p.address}</span></div>
         ${isRoommateMode ? '' : `<div class="summary-row"><span class="summary-key">Rent</span><span class="summary-val">${p.price}</span></div>`}
-        <div class="summary-row"><span class="summary-key">Move-in</span><span class="summary-val">${v('f-movein') || p.avail}</span></div>
+        <div class="summary-row"><span class="summary-key">Move-in</span><span class="summary-val">${esc(v('f-movein')) || p.avail}</span></div>
       </div>
       <div class="summary-block"><div class="summary-head">Personal</div>
-        <div class="summary-row"><span class="summary-key">Name</span><span class="summary-val">${v('f-first')} ${v('f-last')}</span></div>
-        <div class="summary-row"><span class="summary-key">Email</span><span class="summary-val">${v('f-email')}</span></div>
-        <div class="summary-row"><span class="summary-key">Phone</span><span class="summary-val">${v('f-phone')}</span></div>
+        <div class="summary-row"><span class="summary-key">Name</span><span class="summary-val">${esc(v('f-first'))} ${esc(v('f-last'))}</span></div>
+        <div class="summary-row"><span class="summary-key">Email</span><span class="summary-val">${esc(v('f-email'))}</span></div>
+        <div class="summary-row"><span class="summary-key">Phone</span><span class="summary-val">${esc(v('f-phone'))}</span></div>
         <div class="summary-row"><span class="summary-key">Occupants</span><span class="summary-val">${occ ? occ.value : '—'}</span></div>
         ${roommateRows.join('')}
         ${idType ? `<div class="summary-row"><span class="summary-key">ID type</span><span class="summary-val">${idType.value === 'SSN' ? 'US Resident (SSN provided)' : 'International (Passport provided)'}</span></div>` : ''}
-        ${photoFile ? `<div class="summary-row"><span class="summary-key">Photo ID</span><span class="summary-val">${photoFile.name}</span></div>` : ''}
+        ${photoFile ? `<div class="summary-row"><span class="summary-key">Photo ID</span><span class="summary-val">${esc(photoFile.name)}</span></div>` : ''}
       </div>
-      ${(() => { const veh = getVehicles(); return veh.length ? `<div class="summary-block"><div class="summary-head">Vehicles</div>${veh.map((v,i) => `<div class="summary-row"><span class="summary-key">Vehicle ${i+1}</span><span class="summary-val">${[v.year,v.make,v.model].filter(Boolean).join(' ')}${v.plate ? ' · ' + v.plate.toUpperCase() : ''}</span></div>`).join('')}</div>` : ''; })()}
+      ${(() => { const veh = getVehicles(); return veh.length ? `<div class="summary-block"><div class="summary-head">Vehicles</div>${veh.map((v,i) => `<div class="summary-row"><span class="summary-key">Vehicle ${i+1}</span><span class="summary-val">${[v.year,v.make,v.model].filter(Boolean).map(esc).join(' ')}${v.plate ? ' · ' + esc(v.plate.toUpperCase()) : ''}</span></div>`).join('')}</div>` : ''; })()}
       <div class="summary-block"><div class="summary-head">Employment</div>
         <div class="summary-row"><span class="summary-key">Status</span><span class="summary-val">${emp ? emp.value : '—'}</span></div>
-        ${v('f-employer') ? `<div class="summary-row"><span class="summary-key">Employer</span><span class="summary-val">${v('f-employer')}</span></div>` : ''}
-        ${v('f-title') ? `<div class="summary-row"><span class="summary-key">Role</span><span class="summary-val">${v('f-title')}</span></div>` : ''}
+        ${v('f-employer') ? `<div class="summary-row"><span class="summary-key">Employer</span><span class="summary-val">${esc(v('f-employer'))}</span></div>` : ''}
+        ${v('f-title') ? `<div class="summary-row"><span class="summary-key">Role</span><span class="summary-val">${esc(v('f-title'))}</span></div>` : ''}
         <div class="summary-row"><span class="summary-key">Monthly income</span><span class="summary-val">$${Number(v('f-income')||0).toLocaleString()}</span></div>
         <div class="summary-row"><span class="summary-key">Total savings</span><span class="summary-val">$${Number(v('f-savings')||0).toLocaleString()}</span></div>
         <div class="summary-row"><span class="summary-key">Additional income</span><span class="summary-val">${addInc}</span></div>
       </div>
       ${appType !== 'cosigner' ? `
       <div class="summary-block"><div class="summary-head">Rental history</div>
-        <div class="summary-row"><span class="summary-key">Previous address</span><span class="summary-val">${v('f-prevaddr')}</span></div>
-        <div class="summary-row"><span class="summary-key">Reason for leaving</span><span class="summary-val">${v('f-prevreason')}</span></div>
+        <div class="summary-row"><span class="summary-key">Previous address</span><span class="summary-val">${esc(v('f-prevaddr'))}</span></div>
+        <div class="summary-row"><span class="summary-key">Reason for leaving</span><span class="summary-val">${esc(v('f-prevreason'))}</span></div>
         <div class="summary-row"><span class="summary-key">Eviction</span><span class="summary-val">${evict ? evict.value : '—'}</span></div>
         <div class="summary-row"><span class="summary-key">Broke lease</span><span class="summary-val">${broke ? broke.value : '—'}</span></div>
         <div class="summary-row"><span class="summary-key">Bankruptcy</span><span class="summary-val">${bk ? bk.value : '—'}</span></div>
