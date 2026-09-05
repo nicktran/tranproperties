@@ -1081,7 +1081,7 @@
   function restoreState() {
     try {
       const params = new URLSearchParams(window.location.search);
-      if (params.has('skip') || params.has('success') || params.has('roommate')) return;
+      if (params.has('skip') || params.has('success')) return;
       const raw = sessionStorage.getItem(STATE_KEY);
       if (!raw) return;
       const s = JSON.parse(raw);
@@ -1138,7 +1138,7 @@
       if (s.vehicles && s.vehicles.length) s.vehicles.forEach(v => addVehicle(v));
 
       // Navigate to saved step (after DOM settles)
-      if (s.curStep && s.curStep > 1) setTimeout(() => setStep(s.curStep), 50);
+      if (s.curStep && s.curStep > 1) setTimeout(() => { if (s.curStep === 5) buildSummary(); setStep(s.curStep); }, 50);
     } catch(e) {}
   }
 
