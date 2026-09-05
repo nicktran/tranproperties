@@ -633,7 +633,7 @@
           <div class="field"><label class="field-label">Email <span class="req">*</span></label><input type="email" id="f-email" placeholder="jane@university.edu" /><span class="field-err-msg">Enter a valid email</span></div>
           <div class="field"><label class="field-label">Phone <span class="req">*</span></label><input type="tel" id="f-phone" placeholder="(510) 555-0100" /><span class="field-err-msg">Required</span></div>
           <div class="field"><label class="field-label">Date of birth <span class="req">*</span></label><input type="date" id="f-dob" /><span class="field-err-msg">Required</span></div>
-          <div class="field"><label class="field-label">Desired move-in <span class="req">*</span></label><input type="date" id="f-movein" min="2026-06-01" value="2026-06-01" /><span class="field-err-msg">Required</span></div>
+          <div class="field"><label class="field-label">Desired move-in <span class="req">*</span></label><input type="date" id="f-movein" /><span class="field-err-msg">Required</span></div>
         </div>
 
         <div style="margin-bottom:16px;">
@@ -1316,6 +1316,7 @@
 
   function req(id) {
     const el = document.getElementById(id);
+    if (!el) return true;
     const grp = el.closest('.field');
     const valid = el.value.trim() !== '';
     el.classList.toggle('err', !valid);
@@ -1501,6 +1502,7 @@
   });
 
   function restartApplication() {
+    if (isRoommateMode) { clearState(); window.location.reload(); return; }
     // Reset form fields
     document.querySelectorAll('#form-body input, #form-body select, #form-body textarea').forEach(el => {
       if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
@@ -1612,11 +1614,10 @@
     const fd = new FormData();
     const set = (k, val) => fd.append(k, val ?? '');
 
-    const isRoommate = new URLSearchParams(window.location.search).has('roommate');
     set('form-name',             'rental-application');
     set('application-type',      appType || '');
-    set('app-subtype',           isRoommate ? 'roommate-addition' : '');
-    set('roommate-property',     isRoommate ? v('f-roommate-property') : '');
+    set('app-subtype',           isRoommateMode ? 'roommate-addition' : '');
+    set('roommate-property',     isRoommateMode ? v('f-roommate-property') : '');
     set('property',              p.address);
     set('first-name',            v('f-first'));
     set('last-name',             v('f-last'));
@@ -1680,7 +1681,7 @@
       document.querySelectorAll('.steps').forEach(s => s.style.display = 'none');
       const sc = document.getElementById('success-screen');
       sc.classList.add('on');
-      document.getElementById('s-prop').textContent = p.address;
+      document.getElementById('s-prop').textContent = isRoommateMode ? v('f-roommate-property') : p.address;
       document.getElementById('s-email').textContent = v('f-email');
       const d = new Date(); d.setDate(d.getDate() + 2);
       document.getElementById('s-date').textContent = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
@@ -1693,6 +1694,14 @@
       alert('Something went wrong submitting your application. Please try again or email nicktran@nicktran.com directly.');
     });
   }
+
+  // Set move-in date min to today (field has no hardcoded date)
+  (function() {
+    const today = new Date().toISOString().slice(0, 10);
+    const el = document.getElementById('f-movein');
+    el.min = today;
+    if (!el.value) el.value = today;
+  })();
 
   // Pre-render one vehicle card if none were restored from session
   if (vehicleCount === 0) addVehicle();
